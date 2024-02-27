@@ -2,9 +2,12 @@ import * as THREE from "three";
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { Sizes } from "../scripts/types";
 
 export enum Passes {
     UnrealBloomPass,
+    GammaCorrection,
+    SMAAPass
 }
 
 export class Postprocessing {
@@ -31,5 +34,9 @@ export class Postprocessing {
 
     render() {
         this._composer.render()
+    }
+
+    public setSize(sizes: Sizes) {
+        this._composer.setSize(sizes.width, sizes.height)
     }
 }
