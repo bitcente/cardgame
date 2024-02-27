@@ -97,7 +97,7 @@ export default class Terrain {
     update() {
         const terrainMesh = this._mesh
 
-        if (terrainMesh) {
+        if (terrainMesh && input.MOUSE_MOVING) {
             const intersection = input.RAYCASTER?.intersectObject( terrainMesh );
         
             if ( intersection && intersection.length > 0 && playerState.IS_PLAYER_SELECTED ) {
@@ -117,9 +117,10 @@ export default class Terrain {
                         terrainMesh.getColorAt( 0, color.COPY );
                 
                         if ( color.COPY.equals( color.WHITE ) && playerState.PLAYER_CAN_MOVE && playerState.PLAYER ) {
-                            // PAINT SELECTED COLOR (BLUE)
+                            const pathToTile = pathFind({x: playerState.PLAYER.mesh.position.x * .5, z: playerState.PLAYER.mesh.position.z * .5}, {x: tileData.x, z: tileData.z})
+                            // PAINT SELECTED COLOR (BLUE) IF CAN WALK OR DENY COLOR (RED) IF CAN'T WALK OVER TILE
                             terrainMesh.setColorAt( input.INTERSECTED.instanceId, color.COPY.setHex( 
-                                (pathFind({x: playerState.PLAYER._mesh.position.x * .5, z: playerState.PLAYER._mesh.position.z * .5}, {x: tileData.x, z: tileData.z})).length <= 3 ?
+                                (pathToTile).length <= 3 && pathToTile.length != 0 ?
                                 color.SELECT.getHex() : color.DENY.getHex()
                                 ) );
                             if (terrainMesh.instanceColor)

@@ -11,6 +11,8 @@ import { playerState } from './states/player';
 import { input } from './states/input';
 import { sizes } from './states/screen';
 import { CharacterType } from './data/characters';
+import { pointer } from './components/inputController';
+import { global } from './states/global';
 
 // GUI CONTROLLER
 const gui = new dat.GUI()
@@ -18,7 +20,7 @@ const gui = new dat.GUI()
 // SCENE
 const scene = new THREE.Scene()
 scene.background = new THREE.Color('#669EFF')
-
+global.scene = scene
 
 // CAMERA
 const camera = new THREE.OrthographicCamera(
@@ -33,6 +35,7 @@ camera.zoom = 55
 camera.position.x = 10
 camera.position.y = 10
 camera.position.z = 10
+camera.updateProjectionMatrix()
 
 // RENDERER
 const renderer = new Renderer({scene: scene, camera: camera, sizes: sizes, enableShadowMap: true, toneMapping: THREE.ReinhardToneMapping, shadowMapType: THREE.PCFSoftShadowMap, antialias: true})
@@ -69,25 +72,12 @@ const lights = new Lights(scene, {
 // MAP CONTROLS
 const controls = new MapControls(camera, renderer.getDomElement())
 
-
 // PLAYER
 const player = new Player({ name: 'Bitcente', character: CharacterType.Rogue })
 playerState.PLAYER = player
 
 // TERRAIN
 const terrain = new Terrain({ scene: scene, gltfLoader: GLFTLoader })
-
-
-// RAYCASTER
-const pointer = new THREE.Vector2();
-
-function onPointerMove( event: PointerEvent ) {
-	pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-	pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-}
-function onClick() {
-	input.RIGHT_CLICK_DOWN = true
-}
 
 
 // FRAME LOOP
@@ -109,9 +99,6 @@ function animate() {
 
     player.update()
 
-    // RESET INPUTS
-    input.RIGHT_CLICK_DOWN = false
-    
     // RENDER WITH POST PROCESSING
     postprocessing.render()
 
@@ -119,8 +106,6 @@ function animate() {
 }
 animate()
 
-window.addEventListener( 'pointermove', onPointerMove );
-window.addEventListener( 'click', onClick );
 
 // WINDOW RESIZE
 window.addEventListener('resize', () => {

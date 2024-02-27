@@ -6,6 +6,7 @@ export const input: {
     RIGHT_CLICK_DOWN: boolean,
     ESC: boolean,
     ESPACE: boolean,
+    MOUSE_MOVING: boolean,
 
     INTERSECTED: THREE.Intersection | null,
     RAYCASTER: THREE.Raycaster | null,
@@ -15,7 +16,8 @@ export const input: {
     RIGHT_CLICK_DOWN: false,
     ESC: false,
     ESPACE: false,
+    MOUSE_MOVING: false,
 
     INTERSECTED: null,
-    RAYCASTER: null,
+    RAYCASTER: new THREE.Raycaster(),
 }

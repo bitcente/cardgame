@@ -1,5 +1,7 @@
 import { CharacterType, characterStats, dummyCharacterStats } from "../data/characters"
+import { global } from "../states/global"
 import { Character } from "./Character"
+import * as THREE from "three"
 
 export interface PlayerProps {
     name: string
@@ -7,8 +9,9 @@ export interface PlayerProps {
 }
 
 export class Player {
-    _name: string
-    _character: Character
+    private _name: string
+    private _character: Character
+    private _mesh: THREE.Mesh | undefined
 
     constructor({ name = 'No Name', character }: PlayerProps) {
         this._name = name
@@ -25,9 +28,24 @@ export class Player {
 
     init() {
 
+        const m = new THREE.MeshBasicMaterial()
+        const g = new THREE.BoxGeometry(1, 1, 1)
+        const mesh = new THREE.Mesh(g, m)
+        global.scene?.add(mesh)
+        this._mesh = mesh
     }
 
     update() {
         
+    }
+
+    get name() {
+        return this._name
+    }
+    get character() {
+        return this._character
+    }
+    get mesh() {
+        return this._mesh
     }
 }

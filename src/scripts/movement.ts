@@ -17,12 +17,17 @@ function containsObject(obj: Coords, list: any) {
 
 export function pathFind(origin: Coords, target: Coords): Coords[] {
   if (origin.x == null || origin.z == null || target.x == null || target.z == null) return []
-
+  
   const xDiff = Math.abs(origin.x - target.x)
   const zDiff = Math.abs(origin.z - target.z)
 
+  /* map_objects.forEach(object => { */
+    if (map_objects[0].x === target.x && map_objects[0].z === target.z) {
+      return []
+    }
+ /*  }); */
+
   let path: Coords[] = []
-  const obstacles = map_objects
 
   let open: { x: any; z: any; fCost: number; gCost: number; hCost: number; last: any}[] = []
   const closed: any[] = []
@@ -31,10 +36,13 @@ export function pathFind(origin: Coords, target: Coords): Coords[] {
 
   let pathFound = false
 
-  while (open.length > 0 || !pathFound) {
+  while (open.length > 0 && !pathFound) {
+    console.log("ASDDA");
+    
     const current: any = open.reduce(function(prev, curr) {
       return prev.fCost < curr.fCost ? prev : curr;
     })
+    
     for (let i = open.length - 1; i >= 0; i--) {
       if (open[i].x === current.x && open[i].z === current.z) {
         open.splice(i, 1);
@@ -57,7 +65,7 @@ export function pathFind(origin: Coords, target: Coords): Coords[] {
       pathFound = true
     } else {
       
-      const adjacentTiles = adjacentAvailableCoords({x: current.x, z: current.z}, obstacles)
+      const adjacentTiles = adjacentAvailableCoords({x: current.x, z: current.z})
       if (adjacentTiles) {
         adjacentTiles.forEach((adjacentTile) => {
           if (!containsObject(adjacentTile, closed)) {

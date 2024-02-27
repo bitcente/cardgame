@@ -6,6 +6,6 @@ export const playerState: {
     PLAYER_CAN_MOVE: boolean,
 } = {
     PLAYER: undefined,
-    IS_PLAYER_SELECTED: false,
-    PLAYER_CAN_MOVE: false,
+    IS_PLAYER_SELECTED: true,
+    PLAYER_CAN_MOVE: true,
 }
