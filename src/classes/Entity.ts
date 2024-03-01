@@ -1,4 +1,5 @@
-import { Coords } from "../settings"
+import { Coords, Rotation } from "../settings"
+import { global } from "../states/global"
 
 export type StatPoints = {
     HEALTH: number,
@@ -19,6 +20,7 @@ export type EntityProps = {
     nameTag: string,
     baseStats: StatPoints,
     position?: Coords
+    rotation?: Rotation
 }
 
 export class Entity {
@@ -26,24 +28,34 @@ export class Entity {
     private _nameTag: string
     private _baseStats: StatPoints
     private _modifiedStats: StatPoints
-    private _position: Coords | null = null
+    private _position: Coords
+    private _rotation: Rotation
+    private _mesh: THREE.Group | undefined
 
     public constructor({
         id,
         nameTag,
         baseStats,
-        position
+        position = {x: 0, z: 0},
+        rotation = {y: 0},
     }: EntityProps) {
         this._id = id
         this._nameTag = nameTag
         this._baseStats = baseStats
         this._modifiedStats = baseStats
-        position ? this._position = position : null
+        this._position = position
+        this._rotation = rotation
     }
 
     public placeOnBoard(position: Coords) {
+        if (!this._mesh) return
+        if (position.x == null) return
+        if (position.z == null) return
+
         this._position = position
-        // More stuff
+        
+        global.scene?.add(this._mesh)
+        this._mesh.position.set(position.x * 2, 0, position.z * 2)
     }
 
 
@@ -167,6 +179,9 @@ export class Entity {
     get position(): Coords | null {
         return this._position
     }
+    get rotation(): Rotation {
+        return this._rotation
+    }
     get health(): number {
         return this._modifiedStats.HEALTH
     }
@@ -185,10 +200,23 @@ export class Entity {
     get protection(): number {
         return this._modifiedStats.PROTECTION || 0
     }
+    get mesh(): THREE.Group | undefined {
+        return this._mesh
+    }
 
 
     // SETTERS
-    set position(newPosition: Coords | null) {
-        this._position = newPosition
+    set position({x, z}: Coords) {
+        this._position = {x, z}
+        this._mesh?.position.set(x || 0, 0, z || 0)
+        console.log(x, z);
+        
+    }
+    set rotation(newRotation: Rotation) {
+        this._rotation = newRotation
+    }
+    set mesh(newMesh: THREE.Group) {
+        this._mesh = newMesh
+        this.placeOnBoard(this._position)
     }
 }

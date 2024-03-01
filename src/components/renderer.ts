@@ -3,8 +3,6 @@ import * as THREE from "three";
 
 interface RendererProps {
     sizes: Sizes, 
-    scene: THREE.Scene, 
-    camera: THREE.Camera, 
     enableShadowMap?: boolean, 
     toneMapping?: THREE.ToneMapping
     shadowMapType?: THREE.ShadowMapType
@@ -17,8 +15,6 @@ export default class Renderer {
 
     constructor({
         sizes, 
-        scene,
-        camera,
         enableShadowMap, 
         toneMapping,
         shadowMapType,

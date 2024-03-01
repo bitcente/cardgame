@@ -1,26 +1,25 @@
 import { CharacterType, characterStats, dummyCharacterStats } from "../data/characters"
-import { global } from "../states/global"
+import { Coords } from "../settings"
 import { Character } from "./Character"
-import * as THREE from "three"
 
 export interface PlayerProps {
     name: string
     character: CharacterType
+    position?: Coords
 }
 
 export class Player {
     private _name: string
     private _character: Character
-    private _mesh: THREE.Mesh | undefined
 
-    constructor({ name = 'No Name', character }: PlayerProps) {
+    constructor({ name = 'No Name', character, position = {x: 0, z: 0} }: PlayerProps) {
         this._name = name
         this._character = new Character({
-            id: 'name',
-            nameTag: 'name',
+            id: name,
+            nameTag: name,
             baseStats: characterStats.get(character) ?? dummyCharacterStats,
-            position: {x: 0, z: 0},
-            character: character
+            position,
+            character
         })
 
         this.init()
@@ -28,11 +27,7 @@ export class Player {
 
     init() {
 
-        const m = new THREE.MeshBasicMaterial()
-        const g = new THREE.BoxGeometry(1, 1, 1)
-        const mesh = new THREE.Mesh(g, m)
-        global.scene?.add(mesh)
-        this._mesh = mesh
+        
     }
 
     update() {
@@ -45,7 +40,11 @@ export class Player {
     get character() {
         return this._character
     }
-    get mesh() {
-        return this._mesh
+
+    get position() {
+        return this._character.position
+    }
+    get rotation() {
+        return this._character.rotation
     }
 }

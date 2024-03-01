@@ -6,6 +6,7 @@ import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js';
 import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader.js';
 import { Sizes } from "../scripts/types";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
+import { global } from "../states/global";
 
 export enum Passes {
     UnrealBloomPass,
@@ -18,8 +19,6 @@ export class Postprocessing {
 
     constructor(
         renderer: THREE.WebGLRenderer, 
-        scene: THREE.Scene, 
-        camera: THREE.Camera, 
         sizes: {width: number, height: number},
         passes: Passes[]
     ) {
@@ -27,7 +26,7 @@ export class Postprocessing {
         this._composer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
         this._composer.setSize(sizes.width, sizes.height)
 
-        const renderPass = new RenderPass(scene, camera)
+        const renderPass = new RenderPass(global.scene!, global.camera!)
         this._composer.addPass(renderPass)
         if (passes.includes(Passes.UnrealBloomPass)) {
             const unrealBloomPass = new UnrealBloomPass(new THREE.Vector2(sizes.width, sizes.height), .2, 1.4, .4)

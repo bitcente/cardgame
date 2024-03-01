@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import { global } from '../states/global';
+import * as dat from "dat.gui";
 
 interface ambientLightConfiguration {
     intensity: number
@@ -20,26 +22,33 @@ interface directionalLightConfiguration {
     intensity: number
 }
 
-interface LightProps {
-    ambientLight?: boolean
-    ambientLightConfiguration?: ambientLightConfiguration
-    directionalLight?: boolean
-    directionalLightConfiguration?: directionalLightConfiguration
-}
-
 export default class Lights {
     _scene: THREE.Scene
 
-    constructor(
-        scene: THREE.Scene, 
-        { 
-            ambientLight,
-            ambientLightConfiguration,
-            directionalLight,
-            directionalLightConfiguration,
-        }: LightProps
-    ) {
-        this._scene = scene
+    constructor() {
+
+        const ambientLight = true
+        const ambientLightConfiguration = {
+            intensity: .8
+        }
+        const directionalLight = true
+        const directionalLightConfiguration = {
+            castShadow: true,
+            shadowCamera: {
+                top: 5,
+                right: 5,
+                bottom: -5,
+                left: -5,
+                far: 10,
+            },
+            shadowMapSize: 2048,
+            position: new THREE.Vector3(3, 6, 3),
+            target: new THREE.Vector3(0, 1, 0),
+            intensity: 4,
+            enableHelper: false
+        }
+
+        this._scene = global.scene!
         if (ambientLight && ambientLightConfiguration) {
             this.loadAmbientLight(ambientLightConfiguration)
         }
@@ -68,12 +77,17 @@ export default class Lights {
                 if (conf.shadowCamera.near) directionalLight.shadow.camera.near = conf.shadowCamera.near
             }
             if (conf.shadowMapSize) directionalLight.shadow.mapSize.set(conf.shadowMapSize, conf.shadowMapSize)
-            
         }
+
+        // Shadow correction on models
+        directionalLight.shadow.normalBias = 0.01
+
+        // Shadow helper
         if (conf.enableHelper) {
             const directionalLightHelher = new THREE.CameraHelper(directionalLight.shadow.camera)
             this._scene.add(directionalLightHelher)
         }
+
         if (conf.target) {
             directionalLight.target.position.set(conf.target.x, conf.target.y, conf.target.z)
             directionalLight.target.updateMatrixWorld()

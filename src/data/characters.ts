@@ -1,10 +1,10 @@
 import { StatPoints } from "../classes/Entity";
 
 export enum CharacterType {
-    Rogue,
-    Wizard,
-    Knight,
-    Barbarian
+    Rogue = "rogue",
+    Mage = "mage",
+    Knight = "knight",
+    Barbarian = "barbarian"
 }
 
 export const dummyCharacterStats = {
@@ -25,7 +25,7 @@ export const characterStats: Map<CharacterType, StatPoints> = new Map<CharacterT
         ENERGY: 3,
         MAX_ENERGY: 3,
     }],
-    [CharacterType.Wizard, {
+    [CharacterType.Mage, {
         HEALTH: 4,
         MAX_HEALTH: 4,
         MOVEMENT: 1,

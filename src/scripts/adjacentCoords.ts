@@ -13,8 +13,6 @@ export function adjacentCoords(coords: Coords) {
 export function adjacentAvailableCoords(coords: Coords) {
     if (coords.x == null || coords.z == null) return []
 
-    console.log(coords);
-    
     const adjacentCoords = []
     if (isObstacleInCoord(map_objects, {x: coords.x, z: coords.z - 1})) {
       adjacentCoords[0] = {x: coords.x, z: coords.z - 1}

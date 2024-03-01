@@ -8,7 +8,10 @@ export const input: {
     ESPACE: boolean,
     MOUSE_MOVING: boolean,
 
-    INTERSECTED: THREE.Intersection | null,
+    ON_CLICK: { (): void } [],
+
+    TILE_INTERSECTED: THREE.Intersection | null,
+    INTERSECTED_OBJECT: THREE.Object3D<THREE.Object3DEventMap> | null,
     RAYCASTER: THREE.Raycaster | null,
 } = {
     LEFT_CLICK_DOWN: false,
@@ -18,6 +21,17 @@ export const input: {
     ESPACE: false,
     MOUSE_MOVING: false,
 
-    INTERSECTED: null,
+    ON_CLICK: [],
+
+    TILE_INTERSECTED: null,
+    INTERSECTED_OBJECT: null,
     RAYCASTER: new THREE.Raycaster(),
+}
+
+
+export const cursorPointer = () => {
+    document.body.style.cursor = "pointer"
+}
+export const cursorDefault = () => {
+    document.body.style.cursor = "default"
 }

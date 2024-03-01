@@ -21,11 +21,12 @@ export function pathFind(origin: Coords, target: Coords): Coords[] {
   const xDiff = Math.abs(origin.x - target.x)
   const zDiff = Math.abs(origin.z - target.z)
 
-  /* map_objects.forEach(object => { */
-    if (map_objects[0].x === target.x && map_objects[0].z === target.z) {
-      return []
+
+  for (let i = 0; i < map_objects.length; i++) {
+    if (map_objects[i].x === target.x && map_objects[i].z === target.z) {
+      return [];
     }
- /*  }); */
+  }
 
   let path: Coords[] = []
 
@@ -37,7 +38,6 @@ export function pathFind(origin: Coords, target: Coords): Coords[] {
   let pathFound = false
 
   while (open.length > 0 && !pathFound) {
-    console.log("ASDDA");
     
     const current: any = open.reduce(function(prev, curr) {
       return prev.fCost < curr.fCost ? prev : curr;
@@ -58,9 +58,10 @@ export function pathFind(origin: Coords, target: Coords): Coords[] {
       while (!(cNode.x == startingNode.x && cNode.z == startingNode.z)) {
         path.push({x: cNode.x, z: cNode.z})
         cNode = cNode.last
+        
       }
       path.reverse()
-
+      
       open = []
       pathFound = true
     } else {
@@ -82,6 +83,7 @@ export function pathFind(origin: Coords, target: Coords): Coords[] {
                   last: current
                 }
                 open.push(adjacentObject)
+                console.log(open);
                 
               }
             }
@@ -95,17 +97,13 @@ export function pathFind(origin: Coords, target: Coords): Coords[] {
   return path
 }
 
-export function moveObjectTo(targetObject: any, x: number, z: number, obstacles: Coords[], endCallback?: () => any) {
-  if (!targetObject.current) return
+export function moveObjectTo(targetObject: any, x: number, z: number, endCallback?: () => any) {
+  if (!targetObject) return
 
-  const object = targetObject.current
-
+  const object = targetObject
+  
   const objectX = object.position.x
   const objectZ = object.position.z
-
-
-
-
 
   const movementTimeline = gsap.timeline({
     defaults: {
@@ -158,8 +156,8 @@ export function moveObjectTo(targetObject: any, x: number, z: number, obstacles:
     }
     
     movementTimeline.to(object.position, {
-      x: axis.x,
-      z: axis.z,
+      x: axis.x * 2,
+      z: axis.z * 2,
       duration: .3,
       ease: "linear",
     })

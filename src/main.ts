@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MapControls } from 'three/examples/jsm/controls/MapControls.js';
 import * as dat from "dat.gui";
 import Lights from './components/lights';
@@ -13,9 +12,19 @@ import { sizes } from './states/screen';
 import { CharacterType } from './data/characters';
 import { pointer } from './components/inputController';
 import { global } from './states/global';
+import { LootObject } from './classes/LootObject';
+import { map_objects } from './settings';
+import * as Stats from 'stats.js';
+import Camera from './components/camera';
+import { terrainState } from './states/terrain';
 
 // GUI CONTROLLER
-const gui = new dat.GUI()
+//const gui = new dat.GUI()
+
+// PERFORMANCE MONITOR
+var stats = new Stats();
+stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+document.body.appendChild( stats.dom );
 
 // SCENE
 const scene = new THREE.Scene()
@@ -23,67 +32,50 @@ scene.background = new THREE.Color('#669EFF')
 global.scene = scene
 
 // CAMERA
-const camera = new THREE.OrthographicCamera(
-    sizes.width * -.5, 
-    sizes.width * .5, 
-    sizes.height * .5, 
-    sizes.height * -.5, 
-    -30, 
-    100
-);
-camera.zoom = 55
-camera.position.x = 10
-camera.position.y = 10
-camera.position.z = 10
-camera.updateProjectionMatrix()
+const camera = new Camera()
 
 // RENDERER
-const renderer = new Renderer({scene: scene, camera: camera, sizes: sizes, enableShadowMap: true, toneMapping: THREE.ReinhardToneMapping, shadowMapType: THREE.PCFSoftShadowMap, antialias: true})
+const renderer = new Renderer({sizes: sizes, enableShadowMap: true, toneMapping: THREE.ReinhardToneMapping, shadowMapType: THREE.PCFSoftShadowMap, antialias: true})
 
 // EFFECT COMPOSER - POSTPROCESSING
-const postprocessing = new Postprocessing(renderer.getRenderer(), scene, camera, sizes, [Passes.GammaCorrection, Passes.SMAAPass])
-
-// GLFTLOADER
-const GLFTLoader = new GLTFLoader()
+const postprocessing = new Postprocessing(renderer.getRenderer(), sizes, [Passes.GammaCorrection, Passes.SMAAPass])
 
 // LIGHTS
-const lights = new Lights(scene, {
-    ambientLight: true,
-    ambientLightConfiguration: {
-        intensity: .8
-    },
-    directionalLight: true,
-    directionalLightConfiguration: {
-        castShadow: true,
-        shadowCamera: {
-            top: 1,
-            right: 1,
-            bottom: -1,
-            left: -1,
-            far: 4,
-        },
-        shadowMapSize: 2048,
-        position: new THREE.Vector3(1, 3, 1),
-        target: new THREE.Vector3(0, 1, 0),
-        intensity: 4,
-    }
-})
+const lights = new Lights()
 
 // MAP CONTROLS
 const controls = new MapControls(camera, renderer.getDomElement())
 
 // PLAYER
 const player = new Player({ name: 'Bitcente', character: CharacterType.Rogue })
+/* const player2 = new Player({ name: 'Bitcente', character: CharacterType.Mage, position: {x: 1, z: 0} })
+const player3 = new Player({ name: 'Bitcente', character: CharacterType.Knight, position: {x: 2, z: 0} })
+const player4 = new Player({ name: 'Bitcente', character: CharacterType.Barbarian, position: {x: 3, z: 0} }) */
 playerState.PLAYER = player
 
 // TERRAIN
-const terrain = new Terrain({ scene: scene, gltfLoader: GLFTLoader })
+const terrain = new Terrain()
 
+map_objects.forEach((object: any, index: number) => {
+    if (object.x != null && object.z !== null) {
+        new LootObject({ 
+            id: object.type + index, 
+            nameTag: object.type, 
+            baseStats: {HEALTH: 3, MAX_HEALTH: 3},
+            type: object.type,
+            position: {x: object.x, z: object.z},
+            objectData: object
+        })
+    }
+})
 
 // FRAME LOOP
 const clock = new THREE.Clock()
 let prevTime = 0
 function animate() {
+
+    stats.begin();
+
     const elapsedTime = clock.getElapsedTime()
     const deltaTime = elapsedTime - prevTime
     prevTime = elapsedTime
@@ -102,8 +94,11 @@ function animate() {
     // RENDER WITH POST PROCESSING
     postprocessing.render()
 
+    stats.end();
+
     requestAnimationFrame(animate);
 }
+
 animate()
 
 
