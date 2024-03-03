@@ -83,8 +83,6 @@ export function pathFind(origin: Coords, target: Coords): Coords[] {
                   last: current
                 }
                 open.push(adjacentObject)
-                console.log(open);
-                
               }
             }
           }
@@ -120,7 +118,7 @@ export function moveObjectTo(targetObject: any, x: number, z: number, endCallbac
   })
 
   let path: Coords[] = pathFind({ x: objectX, z: objectZ }, { x, z })
-
+  
   let lastAxises = {x: objectX, z: objectZ}
   let lastRotY = object.rotation.y
   
@@ -156,8 +154,8 @@ export function moveObjectTo(targetObject: any, x: number, z: number, endCallbac
     }
     
     movementTimeline.to(object.position, {
-      x: axis.x * 2,
-      z: axis.z * 2,
+      x: axis.x,
+      z: axis.z,
       duration: .3,
       ease: "linear",
     })

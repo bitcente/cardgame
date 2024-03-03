@@ -9,6 +9,12 @@ type LootObjectProps = EntityProps & {
     objectData: ObjectProps
 }
 
+export const characterStats = new Map<ObjectType, number>([
+    [ObjectType.Barrel, .3],
+    [ObjectType.Crate, .4],
+    [ObjectType.LootSack, .01],
+])
+
 export class LootObject extends Entity {
     private _type: ObjectType
     private _objectData: ObjectProps
@@ -38,7 +44,8 @@ export class LootObject extends Entity {
                     const clone = model.scene.clone()
                     castShadows(clone)
 
-                    clone.position.y = .5
+                    clone.scale.x = clone.scale.y = clone.scale.z = .75
+                    clone.position.y = characterStats.get(type) ?? 0
                     const lootObject = new THREE.Group()
                     lootObject.add(clone)
                     

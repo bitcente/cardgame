@@ -25,7 +25,8 @@ export default class Renderer {
         this._renderer = new THREE.WebGLRenderer({ antialias: (antialias ? antialias : false) });
         this._renderer.setSize(this._sizes.width, this._sizes.height);
         document.body.appendChild(this._renderer.domElement);
-
+        this._renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        
         if (enableShadowMap) {
             this._renderer.shadowMap.enabled = true;
         }

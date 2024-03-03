@@ -56,20 +56,31 @@ function onPointerMove( event: PointerEvent ) {
         }
     } */
 }
-function onClick() {
+
+let prevX = 0
+let prevY = 0
+
+const onClickDown = (e: any) => {
 	input.RIGHT_CLICK_DOWN = true
-	
-	// Execute all functions stored inside ON_CLICK global array
-	if (input.ON_CLICK.length) {
-		for (let i = 0; i < input.ON_CLICK.length; i++) {
-			input.ON_CLICK[i]()
-		}
-	}
+
+    prevX = e.x
+    prevY = e.y
 }
-function onClickUp() {
+const onClickUp = (e: any) => {
 	input.RIGHT_CLICK_DOWN = false
+    
+    // Accept click if mouse didn't move more than 10px in each axis before leaving up the click button
+    if (Math.abs(prevX - e.x) < 10 && Math.abs(prevY - e.y) < 10) {
+        
+        // Execute all functions stored inside ON_CLICK global array
+        if (input.ON_CLICK.length) {
+            for (let i = 0; i < input.ON_CLICK.length; i++) {
+                input.ON_CLICK[i]()
+            }
+        }
+    }
 }
 
 window.addEventListener( 'pointermove', onPointerMove );
-window.addEventListener( 'mousedown', onClick );
+window.addEventListener( 'mousedown', onClickDown );
 window.addEventListener( 'mouseup', onClickUp );

@@ -2,7 +2,6 @@ import { cards } from "../data/cards"
 import { CharacterType } from "../data/characters"
 import { modelLoader } from "../loaders/gltfLoader"
 import { castShadows } from "../scripts/castShadows"
-import { global } from "../states/global"
 import { CardController } from "./CardController"
 import { Entity, EntityProps } from "./Entity"
 import * as THREE from "three"
@@ -33,19 +32,22 @@ export class Character extends Entity {
             `/static/models/characters/${character}.gltf`,
             (model) => {
                 const characterGroup = new THREE.Group()
+                characterGroup.name = id
                 castShadows(model.scene)
                 
                 characterGroup.add(model.scene)
+                characterGroup.scale.x = characterGroup.scale.y = characterGroup.scale.z = .55
                 this.mesh = characterGroup
             }
         )
-
         
         this._cardController = new CardController({ deck: cards, ownerEntity: this })
         this._character = character
 
-        
+        this.cardController.drawHand()
     }
+
+    
 
     get character() {
         return this._character

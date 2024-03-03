@@ -29,7 +29,6 @@ export const map_tileset: Tileset[] = [
     {x: 12, z: 0, instancedIndex: undefined},
     {x: 13, z: 0, instancedIndex: undefined},
     {x: 14, z: 0, instancedIndex: undefined},
-    {x: 15, z: 0, instancedIndex: undefined},
  
     {x: 0, z: 1, instancedIndex: undefined},
     {x: 1, z: 1, instancedIndex: undefined},
@@ -46,7 +45,6 @@ export const map_tileset: Tileset[] = [
     {x: 12, z: 1, instancedIndex: undefined},
     {x: 13, z: 1, instancedIndex: undefined},
     {x: 14, z: 1, instancedIndex: undefined},
-    {x: 15, z: 1, instancedIndex: undefined},
  
     {x: 0, z: 2, instancedIndex: undefined},
     {x: 1, z: 2, instancedIndex: undefined},
@@ -63,7 +61,6 @@ export const map_tileset: Tileset[] = [
     {x: 12, z: 2, instancedIndex: undefined},
     {x: 13, z: 2, instancedIndex: undefined},
     {x: 14, z: 2, instancedIndex: undefined},
-    {x: 15, z: 2, instancedIndex: undefined},
  
     {x: 0, z: 3, instancedIndex: undefined},
     {x: 1, z: 3, instancedIndex: undefined},
@@ -80,7 +77,6 @@ export const map_tileset: Tileset[] = [
     {x: 12, z: 3, instancedIndex: undefined},
     {x: 13, z: 3, instancedIndex: undefined},
     {x: 14, z: 3, instancedIndex: undefined},
-    {x: 15, z: 3, instancedIndex: undefined},
  
     {x: 0, z: 4, instancedIndex: undefined},
     {x: 1, z: 4, instancedIndex: undefined},
@@ -97,7 +93,6 @@ export const map_tileset: Tileset[] = [
     {x: 12, z: 4, instancedIndex: undefined},
     {x: 13, z: 4, instancedIndex: undefined},
     {x: 14, z: 4, instancedIndex: undefined},
-    {x: 15, z: 4, instancedIndex: undefined},
  
     {x: 0, z: 5, instancedIndex: undefined},
     {x: 1, z: 5, instancedIndex: undefined},
@@ -114,7 +109,6 @@ export const map_tileset: Tileset[] = [
     {x: 12, z: 5, instancedIndex: undefined},
     {x: 13, z: 5, instancedIndex: undefined},
     {x: 14, z: 5, instancedIndex: undefined},
-    {x: 15, z: 5, instancedIndex: undefined},
  
     {x: 0, z: 6, instancedIndex: undefined},
     {x: 1, z: 6, instancedIndex: undefined},
@@ -131,7 +125,6 @@ export const map_tileset: Tileset[] = [
     {x: 12, z: 6, instancedIndex: undefined},
     {x: 13, z: 6, instancedIndex: undefined},
     {x: 14, z: 6, instancedIndex: undefined},
-    {x: 15, z: 6, instancedIndex: undefined},
  
     {x: 0, z: 7, instancedIndex: undefined},
     {x: 1, z: 7, instancedIndex: undefined},
@@ -148,7 +141,6 @@ export const map_tileset: Tileset[] = [
     {x: 12, z: 7, instancedIndex: undefined},
     {x: 13, z: 7, instancedIndex: undefined},
     {x: 14, z: 7, instancedIndex: undefined},
-    {x: 15, z: 7, instancedIndex: undefined},
  
     {x: 0, z: 8, instancedIndex: undefined},
     {x: 1, z: 8, instancedIndex: undefined},
@@ -165,7 +157,6 @@ export const map_tileset: Tileset[] = [
     {x: 12, z: 8, instancedIndex: undefined},
     {x: 13, z: 8, instancedIndex: undefined},
     {x: 14, z: 8, instancedIndex: undefined},
-    {x: 15, z: 8, instancedIndex: undefined},
  
     {x: 0, z: 9, instancedIndex: undefined},
     {x: 1, z: 9, instancedIndex: undefined},
@@ -182,7 +173,6 @@ export const map_tileset: Tileset[] = [
     {x: 12, z: 9, instancedIndex: undefined},
     {x: 13, z: 9, instancedIndex: undefined},
     {x: 14, z: 9, instancedIndex: undefined},
-    {x: 15, z: 9, instancedIndex: undefined},
  
     {x: 0, z: 10, instancedIndex: undefined},
     {x: 1, z: 10, instancedIndex: undefined},
@@ -199,7 +189,6 @@ export const map_tileset: Tileset[] = [
     {x: 12, z: 10, instancedIndex: undefined},
     {x: 13, z: 10, instancedIndex: undefined},
     {x: 14, z: 10, instancedIndex: undefined},
-    {x: 15, z: 10, instancedIndex: undefined},
  
     {x: 0, z: 11, instancedIndex: undefined},
     {x: 1, z: 11, instancedIndex: undefined},
@@ -216,7 +205,6 @@ export const map_tileset: Tileset[] = [
     {x: 12, z: 11, instancedIndex: undefined},
     {x: 13, z: 11, instancedIndex: undefined},
     {x: 14, z: 11, instancedIndex: undefined},
-    {x: 15, z: 11, instancedIndex: undefined},
  
     {x: 0, z: 12, instancedIndex: undefined},
     {x: 1, z: 12, instancedIndex: undefined},
@@ -233,7 +221,6 @@ export const map_tileset: Tileset[] = [
     {x: 12, z: 12, instancedIndex: undefined},
     {x: 13, z: 12, instancedIndex: undefined},
     {x: 14, z: 12, instancedIndex: undefined},
-    {x: 15, z: 12, instancedIndex: undefined},
  
     {x: 0, z: 13, instancedIndex: undefined},
     {x: 1, z: 13, instancedIndex: undefined},
@@ -250,7 +237,6 @@ export const map_tileset: Tileset[] = [
     {x: 12, z: 13, instancedIndex: undefined},
     {x: 13, z: 13, instancedIndex: undefined},
     {x: 14, z: 13, instancedIndex: undefined},
-    {x: 15, z: 13, instancedIndex: undefined},
  
     {x: 0, z: 14, instancedIndex: undefined},
     {x: 1, z: 14, instancedIndex: undefined},
@@ -267,13 +253,13 @@ export const map_tileset: Tileset[] = [
     {x: 12, z: 14, instancedIndex: undefined},
     {x: 13, z: 14, instancedIndex: undefined},
     {x: 14, z: 14, instancedIndex: undefined},
-    {x: 15, z: 14, instancedIndex: undefined},
  
 ]
 
 export enum ObjectType {
     Barrel = "barrel",
     Crate = "crate",
+    LootSack = "lootSack",
 }
 
 export type ObjectProps = Coords & {
@@ -282,5 +268,10 @@ export type ObjectProps = Coords & {
 
 // How tiles are positioned
 export const map_objects: ObjectProps[] = [
-    {x: 0, z: 2, type: ObjectType.Barrel}
+    {x: 0, z: 10, type: ObjectType.Barrel},
+    {x: 6, z: 14, type: ObjectType.Crate},
+    {x: 6, z: 5, type: ObjectType.LootSack},
+    {x: 8, z: 9, type: ObjectType.LootSack},
+    {x: 8, z: 0, type: ObjectType.Crate},
+    {x: 14, z: 4, type: ObjectType.Barrel},
 ]

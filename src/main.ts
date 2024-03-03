@@ -47,7 +47,7 @@ const lights = new Lights()
 const controls = new MapControls(camera, renderer.getDomElement())
 
 // PLAYER
-const player = new Player({ name: 'Bitcente', character: CharacterType.Rogue })
+const player = new Player({ name: 'Bitcente', character: CharacterType.Barbarian, mine: true })
 /* const player2 = new Player({ name: 'Bitcente', character: CharacterType.Mage, position: {x: 1, z: 0} })
 const player3 = new Player({ name: 'Bitcente', character: CharacterType.Knight, position: {x: 2, z: 0} })
 const player4 = new Player({ name: 'Bitcente', character: CharacterType.Barbarian, position: {x: 3, z: 0} }) */
@@ -90,6 +90,12 @@ function animate() {
     terrain.update()
 
     player.update()
+
+    if (global.UPDATE.length) {
+        for (let i = 0; i < global.UPDATE.length; i++) {
+            global.UPDATE[i]()
+        }
+    }
 
     // RENDER WITH POST PROCESSING
     postprocessing.render()

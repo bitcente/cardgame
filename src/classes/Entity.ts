@@ -1,5 +1,6 @@
 import { Coords, Rotation } from "../settings"
 import { global } from "../states/global"
+import * as THREE from "three";
 
 export type StatPoints = {
     HEALTH: number,
@@ -55,7 +56,7 @@ export class Entity {
         this._position = position
         
         global.scene?.add(this._mesh)
-        this._mesh.position.set(position.x * 2, 0, position.z * 2)
+        this._mesh.position.set(position.x, .5, position.z)
     }
 
 
@@ -206,12 +207,12 @@ export class Entity {
 
 
     // SETTERS
-    set position({x, z}: Coords) {
+    /* set position({x, z}: Coords) {
         this._position = {x, z}
         this._mesh?.position.set(x || 0, 0, z || 0)
         console.log(x, z);
         
-    }
+    } */
     set rotation(newRotation: Rotation) {
         this._rotation = newRotation
     }

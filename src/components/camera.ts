@@ -13,7 +13,7 @@ export default class Camera extends OrthographicCamera {
             -30, 
             100
         )
-        this.zoom = 55
+        this.zoom = 100
         this.position.x = 10
         this.position.y = 10
         this.position.z = 10

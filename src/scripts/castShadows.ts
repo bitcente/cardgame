@@ -1,4 +1,5 @@
 import { Group, Object3DEventMap } from "three"
+import * as THREE from "three";
 
 export const castShadows = (scene: Group<Object3DEventMap>) => {
     scene.traverse((child) => {

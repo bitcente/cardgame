@@ -1,7 +1,7 @@
 {
   "devDependencies": {
     "@types/dat.gui": "^0.7.12",
-    "@types/three": "^0.161.0",
+    "@types/three": "^0.162.0",
     "copy-webpack-plugin": "^11.0.0",
     "html-webpack-plugin": "^5.5.4",
     "ts-loader": "^9.5.1",
@@ -14,7 +14,7 @@
     "dat.gui": "^0.7.9",
     "gsap": "^3.12.5",
     "stats.js": "^0.17.0",
-    "three": "^0.161.0"
+    "three": "^0.162.0"
   },
   "scripts": {
     "build": "webpack",

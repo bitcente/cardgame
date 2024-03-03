@@ -35,13 +35,15 @@ export default class Terrain {
                 this._scene.add(mesh)
 
                 let counter = 0
-                const mult = 2
+                const mult = 1
                 const dummy = new THREE.Object3D()
                 for (let i = 0; i < this._tiles.length; i++) {
 
                     dummy.position.x = this._tiles[i].x * mult
                     dummy.position.z = this._tiles[i].z * mult
-                    dummy.position.y = - 1
+                    dummy.position.y = 0
+
+                    dummy.scale.x = dummy.scale.z = dummy.scale.y = .5
 
                     this._tiles[i].instancedIndex = counter
 
@@ -67,7 +69,7 @@ export default class Terrain {
         if (terrainMesh && input.MOUSE_MOVING) {
             const intersection = input.RAYCASTER?.intersectObject( terrainMesh );
         
-            if ( intersection && intersection.length > 0 && playerState.IS_PLAYER_SELECTED ) {
+            if ( intersection && intersection.length > 0 && playerState.IS_PLAYER_SELECTED && playerState.PLAYER_CAN_MOVE) {
         
                 if (input.TILE_INTERSECTED && input.TILE_INTERSECTED.instanceId && input.TILE_INTERSECTED != intersection[ 0 ]) {
                     terrainMesh.setColorAt( input.TILE_INTERSECTED.instanceId, color.COPY.setHex( color.WHITE.getHex() ) );
@@ -83,9 +85,9 @@ export default class Terrain {
 
                         terrainMesh.getColorAt( 0, color.COPY );
                 
-                        if ( color.COPY.equals( color.WHITE ) && playerState.PLAYER_CAN_MOVE && playerState.PLAYER && playerState.PLAYER.character.mesh) {
+                        if ( color.COPY.equals( color.WHITE ) && playerState.PLAYER.character.mesh) {
                             const characterPosition = playerState.PLAYER.character.mesh.position
-                            const pathToTile = pathFind({x: characterPosition.x * .5, z: characterPosition.z * .5}, {x: tileData.x, z: tileData.z})
+                            const pathToTile = pathFind({x: characterPosition.x, z: characterPosition.z}, {x: tileData.x, z: tileData.z})
                             const canWalk = (pathToTile).length <= 3 && pathToTile.length != 0
                             // PAINT SELECTED COLOR (BLUE) IF CAN WALK OR DENY COLOR (RED) IF CAN'T WALK OVER TILE
                             terrainMesh.setColorAt( input.TILE_INTERSECTED.instanceId, color.COPY.setHex( 
@@ -123,17 +125,14 @@ export default class Terrain {
     tileClicked() {
         if (input.INTERSECTED_OBJECT === this._mesh) {
             const tile = terrainState.TILE_HOVERED
-
-            if (tile.canWalk) {
-                console.log("je");
-                
+            if (tile.canWalk && playerState.PLAYER_CAN_MOVE && playerState.IS_PLAYER_SELECTED) {
+                playerState.PLAYER_CAN_MOVE = false
+                cursorDefault()
                 moveObjectTo(playerState.PLAYER.character.mesh, tile.x || 0, tile.z || 0, () => {
-                    console.log("HSADH EBD");
-                    
+                    playerState.IS_PLAYER_SELECTED = false
+                    playerState.PLAYER_CAN_MOVE = true
                 })
             }
-            
-            
         }
     }
 
