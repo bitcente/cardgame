@@ -41,10 +41,25 @@ export class Character extends Entity {
             }
         )
         
-        this._cardController = new CardController({ deck: cards, ownerEntity: this })
+        this._cardController = new CardController({ deck: [
+            Object.assign({}, cards[0]),
+            Object.assign({}, cards[0]),
+            Object.assign({}, cards[0]),
+            Object.assign({}, cards[0]),
+            Object.assign({}, cards[0]),
+            Object.assign({}, cards[0]),
+            Object.assign({}, cards[0]),
+            Object.assign({}, cards[1]),
+            Object.assign({}, cards[1]),
+            Object.assign({}, cards[1]),
+            Object.assign({}, cards[1]),
+            Object.assign({}, cards[1]),
+            Object.assign({}, cards[1]),
+            Object.assign({}, cards[1]),
+        ], ownerEntity: this })
         this._character = character
 
-        this.cardController.drawHand()
+        //this.cardController.drawHand()
     }
 
     

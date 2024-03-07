@@ -15,7 +15,7 @@ function containsObject(obj: Coords, list: any) {
   return false;
 }
 
-export function pathFind(origin: Coords, target: Coords): Coords[] {
+export function pathFind(origin: Coords, target: Coords, test?: string): Coords[] {
   if (origin.x == null || origin.z == null || target.x == null || target.z == null) return []
   
   const xDiff = Math.abs(origin.x - target.x)
@@ -83,6 +83,8 @@ export function pathFind(origin: Coords, target: Coords): Coords[] {
                   last: current
                 }
                 open.push(adjacentObject)
+                console.log(test);
+                
               }
             }
           }
@@ -95,8 +97,8 @@ export function pathFind(origin: Coords, target: Coords): Coords[] {
   return path
 }
 
-export function moveObjectTo(targetObject: any, x: number, z: number, endCallback?: () => any) {
-  if (!targetObject) return
+export function moveObjectTo(targetObject: any, x: number, z: number, endCallback?: () => any): number {
+  if (!targetObject) return 0
 
   const object = targetObject
   
@@ -164,4 +166,6 @@ export function moveObjectTo(targetObject: any, x: number, z: number, endCallbac
   })
 
   movementTimeline.play()
+
+  return path.length
 }

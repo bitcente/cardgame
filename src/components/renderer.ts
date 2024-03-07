@@ -1,5 +1,6 @@
 import { Sizes } from "../scripts/types";
 import * as THREE from "three";
+import { global } from "../states/global";
 
 interface RendererProps {
     sizes: Sizes, 
@@ -22,7 +23,7 @@ export default class Renderer {
     }: RendererProps) {
 
         this._sizes = sizes
-        this._renderer = new THREE.WebGLRenderer({ antialias: (antialias ? antialias : false) });
+        this._renderer = new THREE.WebGLRenderer({ antialias: (antialias ? antialias : false), alpha: true });
         this._renderer.setSize(this._sizes.width, this._sizes.height);
         document.body.appendChild(this._renderer.domElement);
         this._renderer.shadowMap.type = THREE.PCFSoftShadowMap;

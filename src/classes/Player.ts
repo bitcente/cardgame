@@ -1,7 +1,9 @@
+import UIController from "../controllers/UIController"
 import { CharacterType, characterStats, dummyCharacterStats } from "../data/characters"
 import { Coords } from "../settings"
 import { cursorDefault, input } from "../states/input"
 import { playerState } from "../states/player"
+import { terrainState } from "../states/terrain"
 import { Character } from "./Character"
 
 export interface PlayerProps {
@@ -30,7 +32,13 @@ export class Player {
     }
 
     init() {
-        
+        if (this._mine) {
+            UIController.health = this._character.health
+            UIController.protection = this._character.protection
+            UIController.movement = this._character.movement
+            UIController.energy = this._character.energy
+            UIController.maxEnergy = this._character.maxEnergy
+        }
     }
 
     selectCharacter() {
@@ -46,7 +54,12 @@ export class Player {
             if (par.name === this.character.id) {
                 playerState.IS_PLAYER_SELECTED = !playerState.IS_PLAYER_SELECTED
 
-                if (!playerState.IS_PLAYER_SELECTED) cursorDefault()
+                if (playerState.IS_PLAYER_SELECTED) {
+                    terrainState.terrain?.updateWalkableTiles()
+                } else {
+                    terrainState.terrain?.resetTiles()
+                    cursorDefault()
+                }
             }
         }
     }

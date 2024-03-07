@@ -31,8 +31,19 @@ const scene = new THREE.Scene()
 scene.background = new THREE.Color('#669EFF')
 global.scene = scene
 
+/* const sceneCards = new THREE.Scene();
+global.sceneCards = sceneCards
+
+const m = new THREE.MeshBasicMaterial({ color: new THREE.Color('red') })
+const g = new THREE.PlaneGeometry(100, 150)
+const mesh = new THREE.Mesh(g, m)
+global.sceneCards.add(mesh) */
+
 // CAMERA
 const camera = new Camera()
+/* const cameraCards = new THREE.OrthographicCamera( - sizes.width / 2, sizes.width / 2, sizes.height / 2, - sizes.height / 2, 1, 10 );
+cameraCards.position.z = 1;
+global.cameraCards = cameraCards */
 
 // RENDERER
 const renderer = new Renderer({sizes: sizes, enableShadowMap: true, toneMapping: THREE.ReinhardToneMapping, shadowMapType: THREE.PCFSoftShadowMap, antialias: true})
@@ -55,6 +66,7 @@ playerState.PLAYER = player
 
 // TERRAIN
 const terrain = new Terrain()
+terrainState.terrain = terrain
 
 map_objects.forEach((object: any, index: number) => {
     if (object.x != null && object.z !== null) {
@@ -117,6 +129,9 @@ window.addEventListener('resize', () => {
     camera.right = sizes.width * .5
     camera.bottom = sizes.height * -.5
     camera.left = sizes.width * -.5
+
+    // Fix camera aspect
+    camera.updateProjectionMatrix()
 
     renderer.setSize({width: sizes.width, height: sizes.height})
     postprocessing.setSize({width: sizes.width, height: sizes.height})

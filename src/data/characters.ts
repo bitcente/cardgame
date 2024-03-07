@@ -10,7 +10,7 @@ export enum CharacterType {
 export const dummyCharacterStats = {
     HEALTH: 4,
     MAX_HEALTH: 4,
-    MOVEMENT: 1,
+    MOVEMENT: 0,
     PROTECTION: 0,
     ENERGY: 3,
     MAX_ENERGY: 3,
@@ -20,7 +20,7 @@ export const characterStats: Map<CharacterType, StatPoints> = new Map<CharacterT
     [CharacterType.Rogue, {
         HEALTH: 4,
         MAX_HEALTH: 4,
-        MOVEMENT: 2,
+        MOVEMENT: 0,
         PROTECTION: 0,
         ENERGY: 3,
         MAX_ENERGY: 3,
@@ -28,7 +28,7 @@ export const characterStats: Map<CharacterType, StatPoints> = new Map<CharacterT
     [CharacterType.Mage, {
         HEALTH: 4,
         MAX_HEALTH: 4,
-        MOVEMENT: 1,
+        MOVEMENT: 0,
         PROTECTION: 0,
         ENERGY: 4,
         MAX_ENERGY: 4,
@@ -36,7 +36,7 @@ export const characterStats: Map<CharacterType, StatPoints> = new Map<CharacterT
     [CharacterType.Knight, {
         HEALTH: 5,
         MAX_HEALTH: 5,
-        MOVEMENT: 1,
+        MOVEMENT: 0,
         PROTECTION: 0,
         ENERGY: 3,
         MAX_ENERGY: 3,
@@ -44,7 +44,7 @@ export const characterStats: Map<CharacterType, StatPoints> = new Map<CharacterT
     [CharacterType.Barbarian, {
         HEALTH: 5,
         MAX_HEALTH: 5,
-        MOVEMENT: 1,
+        MOVEMENT: 0,
         PROTECTION: 0,
         ENERGY: 3,
         MAX_ENERGY: 3,

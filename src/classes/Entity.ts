@@ -1,6 +1,8 @@
+import UIController from "../controllers/UIController";
 import { Coords, Rotation } from "../settings"
 import { global } from "../states/global"
 import * as THREE from "three";
+import { terrainState } from "../states/terrain";
 
 export type StatPoints = {
     HEALTH: number,
@@ -48,7 +50,7 @@ export class Entity {
         this._rotation = rotation
     }
 
-    public placeOnBoard(position: Coords) {
+    public placeOnBoard(position: Coords): void {
         if (!this._mesh) return
         if (position.x == null) return
         if (position.z == null) return
@@ -59,11 +61,21 @@ export class Entity {
         this._mesh.position.set(position.x, .5, position.z)
     }
 
+    public resetTurn(): void {
+        // Class stats
+        this.resetStats()
+
+        // Update UI
+        UIController.energy = this._modifiedStats.ENERGY ?? 0
+        UIController.protection = this._modifiedStats.PROTECTION ?? 0
+        UIController.movement = this._modifiedStats.MOVEMENT ?? 0
+    }
 
     // STATS ADDITIONS
     public addMovement(movementPoints: number): void {
-        if (movementPoints > 0 && this._modifiedStats.MOVEMENT) {
+        if (movementPoints > 0 && this._modifiedStats.MOVEMENT != undefined) {
             this._modifiedStats.MOVEMENT += movementPoints
+            terrainState.terrain?.updateWalkableTiles()
         }
     }
     public addProtection(protectionPoints: number): void {
@@ -101,12 +113,13 @@ export class Entity {
     // STATS SUBTRACTIONS
     public subtractMovement(movementPoints: number): number | undefined {
         if (movementPoints <= 0) return
-        if (!this._modifiedStats.MOVEMENT) return
+        if (this._modifiedStats.MOVEMENT == undefined) return
         // Cap at 0
-        Math.max(
+        this._modifiedStats.MOVEMENT = Math.max(
             this._modifiedStats.MOVEMENT - movementPoints,
             0
         )
+        terrainState.terrain?.updateWalkableTiles()
         // Return end value
         return this._modifiedStats.MOVEMENT
     }
@@ -149,9 +162,10 @@ export class Entity {
     }
 
     public resetStats() {
-        this._modifiedStats.MOVEMENT = this._baseStats.MOVEMENT
-        this._modifiedStats.PROTECTION = this._baseStats.PROTECTION
+        this._modifiedStats.MOVEMENT = 0
+        this._modifiedStats.PROTECTION = 0
         this._modifiedStats.ENERGY = this._baseStats.MAX_ENERGY
+        terrainState.terrain?.resetTiles()
     }
 
 

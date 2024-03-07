@@ -10,6 +10,7 @@ export const input: {
 
     ON_CLICK: { (): void } [],
 
+    HOVER_HAND: boolean
     TILE_INTERSECTED: THREE.Intersection | null,
     INTERSECTED_OBJECT: THREE.Object3D<THREE.Object3DEventMap> | null,
     RAYCASTER: THREE.Raycaster | null,
@@ -23,6 +24,7 @@ export const input: {
 
     ON_CLICK: [],
 
+    HOVER_HAND: false,
     TILE_INTERSECTED: null,
     INTERSECTED_OBJECT: null,
     RAYCASTER: new THREE.Raycaster(),

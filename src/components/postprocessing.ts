@@ -28,6 +28,15 @@ export class Postprocessing {
 
         const renderPass = new RenderPass(global.scene!, global.camera!)
         this._composer.addPass(renderPass)
+
+
+       /*  const renderPass2 = new RenderPass(global.sceneCards!, global.cameraCards!)
+        this._composer.addPass(renderPass2)
+
+        renderPass2.renderToScreen = true;
+        renderPass2.clear = false;
+        renderPass2.clearDepth = false; */
+
         if (passes.includes(Passes.UnrealBloomPass)) {
             const unrealBloomPass = new UnrealBloomPass(new THREE.Vector2(sizes.width, sizes.height), .2, 1.4, .4)
             this._composer.addPass(unrealBloomPass)

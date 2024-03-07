@@ -5,6 +5,7 @@ import { global } from '../states/global';
 
 // RAYCASTER
 export const pointer = new THREE.Vector2();
+const root = document.documentElement
 
 //const hoveredObjects: any[string] = [];
 
@@ -12,6 +13,11 @@ let timer: NodeJS.Timeout
 function onPointerMove( event: PointerEvent ) {
 	pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
 	pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+    if (root) {
+        root.style.setProperty('--mouse-x', `${event.clientX}px`);
+        root.style.setProperty('--mouse-y', `${event.clientY}px`);
+    }
 
     input.MOUSE_MOVING = true
     clearTimeout(timer)

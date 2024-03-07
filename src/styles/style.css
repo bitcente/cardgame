@@ -3,6 +3,12 @@
    License: none (public domain)
 */
 
+* {
+	-moz-box-sizing: border-box; 
+    -webkit-box-sizing: border-box; 
+	box-sizing: border-box; 
+}
+
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -30,6 +36,8 @@ footer, header, hgroup, menu, nav, section {
 }
 body {
 	line-height: 1;
+	overflow: hidden;
+	font-family: monospace;
 }
 ol, ul {
 	list-style: none;
@@ -45,4 +53,156 @@ q:before, q:after {
 table {
 	border-collapse: collapse;
 	border-spacing: 0;
+}
+
+
+
+
+/* CARDS */
+
+:root {
+	--card-mult: 75;
+	--card-width: calc(2.5px * var(--card-mult));
+	--card-height: calc(3.5px * var(--card-mult));
+	--card-timing: .3s
+}
+
+
+#hand{
+    /* width: 30%;
+    height: calc(4.5px * var(--card-mult));
+	transform: translateX(-50%); */
+	width: 100%;
+	height: 100%;
+    position: absolute;
+    display: block;
+	top: 0;
+	left: 0;
+	pointer-events: none;
+    /* left: 50%;
+    bottom: 0; */
+    /* border: 1px solid black; */
+}
+
+.card {
+	pointer-events: all;
+    width: var(--card-width);
+    height: var(--card-height);
+    position: absolute;
+    display: block;
+/*     bottom: -100%; */
+/*     left: calc(50% - 2.5px * var(--card-mult)); */
+	scale: 1;
+	bottom: 0px;
+	left: 100px;
+    background-color: white;
+    box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    z-index: 1;
+    transition: var(--card-timing) left ease, var(--card-timing) bottom ease, var(--card-timing) transform ease, var(--card-timing) width ease, var(--card-timing) height ease, 0s z-index ease, 0.2s scale ease;
+    user-select: none;
+	cursor: pointer;
+	padding: 10px;
+}
+
+.card:not(.created) {
+	scale: .3 !important;
+}
+
+.card * {
+	pointer-events: none;
+}
+
+.card.is-hovered {
+	transition: var(--card-timing) left ease, var(--card-timing) bottom ease, var(--card-timing) transform ease, var(--card-timing) width ease, var(--card-timing) height ease, 0.3s z-index ease, 0.2s scale ease;
+	z-index: 2;
+}
+
+.card.cant-play {
+	background-color: red;
+	cursor: auto;
+}
+
+.card.used, .card.discarted {
+	transition: .5s left ease, .5s bottom ease, var(--card-timing) transform ease, var(--card-timing) width ease, var(--card-timing) height ease, 0.3s z-index ease, 0.2s scale ease;
+	/* scale: 0; */
+	bottom: calc(0px) !important;
+	scale: .3;
+	left: calc(100% - 100px) !important;
+}
+
+.card.dragging {
+	transition: 0s left ease, 0s bottom ease, var(--card-timing) transform ease, var(--card-timing) width ease, var(--card-timing) height ease, 0.3s z-index ease, 0.2s scale ease;
+	left: calc(var(--mouse-x) - var(--card-width) / 2) !important;
+	bottom: calc(100% - var(--mouse-y) - var(--card-height) / 2) !important;
+	transform: rotate(0deg) !important;
+}
+
+.card span {
+	display: block;
+}
+
+.card .value {
+	font-weight: bolder;
+	font-size: 30px;
+	margin: 5px;
+}
+.card .cost{
+	background-color: deepskyblue;
+	padding: 5px;
+	border-radius: 50%;
+	width: 30px;
+	height: 30px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-weight: bold;
+	color: white;
+	position: absolute;
+	top: -10px;
+	left: -10px;
+}
+
+
+
+
+
+
+
+
+#hud {
+	width: 100%;
+	height: 100%;
+    position: absolute;
+	top: 0;
+	left: 0;
+	pointer-events: none;
+	z-index: 10;
+}
+
+#hud * {
+	pointer-events: all;
+}
+
+#energy {
+	position: absolute;
+	top: 30px;
+	right: 30px;
+	font-size: 30px;
+	font-weight: bold;
+}
+
+#deck {
+	position: absolute;
+	bottom: 30px;
+	left: 30px;
+	font-size: 30px;
+	font-weight: bold;
+}
+#discard-pile {
+	position: absolute;
+	bottom: 30px;
+	right: 30px;
+	font-size: 30px;
+	font-weight: bold;
 }

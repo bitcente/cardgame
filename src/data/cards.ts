@@ -8,6 +8,8 @@ export const cards: Card[] = [
         energyCost: 1,
         effect({ source }) {
             source.addMovement(2)
+            console.log(source);
+            
         },
     },
     {
