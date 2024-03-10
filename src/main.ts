@@ -71,7 +71,7 @@ terrainState.terrain = terrain
 map_objects.forEach((object: any, index: number) => {
     if (object.x != null && object.z !== null) {
         new LootObject({ 
-            id: object.type + index, 
+            id: object.id, 
             nameTag: object.type, 
             baseStats: {HEALTH: 3, MAX_HEALTH: 3},
             type: object.type,

@@ -1,15 +1,13 @@
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { Tileset, map_objects, map_tileset } from "../settings";
-import { IcosahedronGeometry, MeshPhongMaterial } from "three";
 import * as THREE from "three";
-import { cursorDefault, cursorPointer, input } from "../states/input";
-import { color } from "../states/color";
-import { playerState } from "../states/player";
-import { moveObjectTo, pathFind } from "../scripts/movement";
-import { terrainState } from "../states/terrain";
-import { modelLoader } from "../loaders/gltfLoader";
-import { global } from "../states/global";
 import attackController from "../controllers/attackController";
+import { modelLoader } from "../loaders/gltfLoader";
+import { moveObjectTo, pathFind } from "../scripts/movement";
+import { Tileset, map_tileset } from "../settings";
+import { color } from "../states/color";
+import { global } from "../states/global";
+import { cursorDefault, cursorPointer, input } from "../states/input";
+import { playerState } from "../states/player";
+import { terrainState } from "../states/terrain";
 
 export default class Terrain {
     _tiles

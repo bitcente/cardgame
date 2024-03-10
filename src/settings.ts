@@ -264,15 +264,17 @@ export enum ObjectType {
 }
 
 export type ObjectProps = Coords & {
-    type: ObjectType
+    id: string,
+    type: ObjectType,
+    destroyed: boolean
 }
 
 // How tiles are positioned
 export const map_objects: ObjectProps[] = [
-    {x: 1, z: 2, type: ObjectType.Barrel}, /* {x: 0, z: 10, type: ObjectType.Barrel}, */
-    {x: 6, z: 14, type: ObjectType.Crate},
-    {x: 6, z: 5, type: ObjectType.LootSack},
-    {x: 8, z: 9, type: ObjectType.LootSack},
-    {x: 8, z: 0, type: ObjectType.Crate},
-    {x: 14, z: 4, type: ObjectType.Barrel},
+    {id: "Barrel1", x: 1, z: 2, type: ObjectType.Barrel, destroyed: false}, /* {id: "Barrel1",x: 0, z: 10, type: ObjectType.Barrel, destroyed: false}, */
+    {id: "Crate1",x: 6, z: 14, type: ObjectType.Crate, destroyed: false},
+    {id: "LootSack1",x: 6, z: 5, type: ObjectType.LootSack, destroyed: false},
+    {id: "LootSack2",x: 8, z: 9, type: ObjectType.LootSack, destroyed: false},
+    {id: "Crate2",x: 8, z: 0, type: ObjectType.Crate, destroyed: false},
+    {id: "Barrel2",x: 14, z: 4, type: ObjectType.Barrel, destroyed: false},
 ]

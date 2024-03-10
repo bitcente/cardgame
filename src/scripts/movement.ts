@@ -22,7 +22,7 @@ export function pathFind(origin: Coords, target: Coords, t?: boolean): Coords[] 
   const zDiff = Math.abs(origin.z - target.z)
 
   for (let i = 0; i < map_objects.length; i++) {
-    if (map_objects[i].x === target.x && map_objects[i].z === target.z) {
+    if (map_objects[i].x === target.x && map_objects[i].z === target.z && map_objects[i].destroyed !== true) {
       return [];
     }
   }

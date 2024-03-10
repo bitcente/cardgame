@@ -1,6 +1,6 @@
 import { modelLoader } from "../loaders/gltfLoader";
 import { castShadows } from "../scripts/castShadows";
-import { ObjectProps, ObjectType } from "../settings";
+import { ObjectProps, ObjectType, map_objects } from "../settings";
 import { Entity, EntityProps, entitySuffix } from "./Entity";
 import * as THREE from "three"
 
@@ -54,5 +54,16 @@ export class LootObject extends Entity {
                 }
             }
         )
+    }
+
+    public kill(): void {
+        if (this.mesh) {
+            this.mesh.visible = false
+            
+            const objectInArray = map_objects.find(obj => obj.id === this.id)
+            if (objectInArray) {
+                objectInArray.destroyed = true
+            }
+        }
     }
 }
