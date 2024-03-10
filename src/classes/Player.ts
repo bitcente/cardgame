@@ -4,6 +4,7 @@ import { Coords } from "../settings"
 import { cursorDefault, input } from "../states/input"
 import { playerState } from "../states/player"
 import { terrainState } from "../states/terrain"
+import { findParentOfMeshByName } from "../utils/utils"
 import { Character } from "./Character"
 
 export interface PlayerProps {
@@ -27,7 +28,7 @@ export class Player {
             character
         })
 
-        input.ON_CLICK.push(this.selectCharacter.bind(this))
+        input.ON_CLICK.push({ id: "character", function: this.selectCharacter.bind(this) })
         this.init()
     }
 
@@ -44,22 +45,17 @@ export class Player {
     selectCharacter() {
         if (!input.INTERSECTED_OBJECT) return
         if (!this._mine) return
+        if (playerState.PREPARING_ENTITY_ATTACK || playerState.PREPARING_TILE_ATTACK) return
 
-        let par = input.INTERSECTED_OBJECT.parent;
-        if (par) {
-            while (par?.name !== this.character.id && par.parent) {
-                if (par) par = par.parent
-            }
-
-            if (par.name === this.character.id) {
-                playerState.IS_PLAYER_SELECTED = !playerState.IS_PLAYER_SELECTED
-
-                if (playerState.IS_PLAYER_SELECTED) {
-                    terrainState.terrain?.updateWalkableTiles()
-                } else {
-                    terrainState.terrain?.resetTiles()
-                    cursorDefault()
-                }
+        let characterGroupMesh = findParentOfMeshByName(input.INTERSECTED_OBJECT.parent, this.character.id, true)
+        if (characterGroupMesh) {
+            playerState.IS_PLAYER_SELECTED = !playerState.IS_PLAYER_SELECTED
+            if (playerState.IS_PLAYER_SELECTED) {
+                console.log("prev updateWalkableTiles");
+                terrainState.terrain?.updateWalkableTiles()
+            } else {
+                terrainState.terrain?.resetTiles()
+                cursorDefault()
             }
         }
     }

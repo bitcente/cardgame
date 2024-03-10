@@ -3,6 +3,7 @@ import { Coords, Rotation } from "../settings"
 import { global } from "../states/global"
 import * as THREE from "three";
 import { terrainState } from "../states/terrain";
+import { playerState } from "../states/player";
 
 export type StatPoints = {
     HEALTH: number,
@@ -26,6 +27,9 @@ export type EntityProps = {
     rotation?: Rotation
 }
 
+export const entityList: Entity[] = []
+export const entitySuffix = "_game_entity"
+
 export class Entity {
     private _id: string
     private _nameTag: string
@@ -48,6 +52,8 @@ export class Entity {
         this._modifiedStats = baseStats
         this._position = position
         this._rotation = rotation
+
+        entityList.push(this)
     }
 
     public placeOnBoard(position: Coords): void {
@@ -75,7 +81,7 @@ export class Entity {
     public addMovement(movementPoints: number): void {
         if (movementPoints > 0 && this._modifiedStats.MOVEMENT != undefined) {
             this._modifiedStats.MOVEMENT += movementPoints
-            terrainState.terrain?.updateWalkableTiles()
+            if (playerState.IS_PLAYER_SELECTED) terrainState.terrain?.updateWalkableTiles()
         }
     }
     public addProtection(protectionPoints: number): void {
@@ -145,27 +151,44 @@ export class Entity {
         // Return end value
         return this._modifiedStats.ENERGY
     }
-    public takeDamage(damage: number) {
+    public takeDamage(damage: number): void {
         if (damage <= 0) return
-        if (!this._modifiedStats.PROTECTION) return
-        // Damage overpasses protection
-        if (damage > this._modifiedStats.PROTECTION) {
-            const remainingDamage = this._modifiedStats.PROTECTION - damage
-            this.subtractProtection(this._modifiedStats.PROTECTION)
+        const protection = this._modifiedStats.PROTECTION ?? 0
+        
+        if (protection === 0) {
+            // No protection. Clean hit
+            this._modifiedStats.HEALTH = Math.max(this._modifiedStats.HEALTH - damage, 0)
+        } else if (damage > protection) {
+            // Damage overpasses protection
+            const remainingDamage = damage - protection
+            this.subtractProtection(protection)
             if (remainingDamage >= this._modifiedStats.HEALTH) {
                 this._modifiedStats.HEALTH = 0
+            } else {
+                this._modifiedStats.HEALTH = remainingDamage
             }
         } else {
             // Protection can handle damage by itself
             this.subtractProtection(damage)
         }
+
+        if (this._modifiedStats.HEALTH === 0) {
+            this.kill()
+        }
     }
 
-    public resetStats() {
+    public resetStats(): void {
         this._modifiedStats.MOVEMENT = 0
         this._modifiedStats.PROTECTION = 0
         this._modifiedStats.ENERGY = this._baseStats.MAX_ENERGY
         terrainState.terrain?.resetTiles()
+    }
+
+    public kill(): void {
+        if (this._mesh) {
+            this._mesh.visible = false
+            if (this._modifiedStats.HEALTH !== 0) this._modifiedStats.HEALTH = 0
+        }
     }
 
 

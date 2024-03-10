@@ -8,7 +8,7 @@ export const input: {
     ESPACE: boolean,
     MOUSE_MOVING: boolean,
 
-    ON_CLICK: { (): void } [],
+    ON_CLICK: { id: string, function: () => void } [],
 
     HOVER_HAND: boolean
     TILE_INTERSECTED: THREE.Intersection | null,

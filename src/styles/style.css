@@ -55,6 +55,9 @@ table {
 	border-spacing: 0;
 }
 
+.hidden {
+	display: none;
+}
 
 
 
@@ -205,4 +208,29 @@ table {
 	right: 30px;
 	font-size: 30px;
 	font-weight: bold;
+}
+
+#attacking {
+	position: absolute;
+	top: 30px;
+	left: 50%;
+	font-size: 30px;
+	font-weight: bold;
+	color: white;
+	background-color: black;
+	padding: 10px 20px;
+	transform: translateX(-50%);
+}
+
+#cancel-attack-action {
+	position: absolute;
+	top: 50%;
+	right: 30px;
+	font-size: 30px;
+	font-weight: bold;
+	color: white;
+	background-color: red;
+	padding: 10px 20px;
+	transform: translateY(-50%);
+	cursor: pointer;
 }

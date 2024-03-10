@@ -1,3 +1,6 @@
+import { Card } from "../classes/CardController"
+import { playerState } from "../states/player"
+import attackController from "./attackController"
 
 
 class UIController {
@@ -6,12 +9,29 @@ class UIController {
     private _UIDeckCounter: HTMLElement | null = document.getElementById("deck-counter")
     private _UIDiscardPileCounter: HTMLElement | null = document.getElementById("discard-pile-counter")
 
-    constructor() {
+    private _UIAttacking: HTMLElement | null = document.getElementById("attacking")
 
+    private _UICancelAttackAction: HTMLElement | null = document.getElementById("cancel-attack-action")
+
+    constructor() {
+        this._UICancelAttackAction?.addEventListener('click', () => {
+            const lastCancellableCardUsed = playerState.PLAYER.character.cardController.history.find((card: Card) => card.canCancel == true)
+            playerState.PLAYER.character.cardController.extractFromDiscardPile(lastCancellableCardUsed.generatedId)
+            attackController.cancelAttackEntity()
+        })
     }
 
     
-
+    set attacking(attacking: boolean) {
+        if (attacking) {
+            this._UIAttacking?.classList.remove('hidden')
+            this._UICancelAttackAction?.classList.remove('hidden')
+        } 
+        if (!attacking) {
+            this._UIAttacking?.classList.add('hidden')
+            this._UICancelAttackAction?.classList.add('hidden')
+        } 
+    }
 
     set health(health: number) {
         

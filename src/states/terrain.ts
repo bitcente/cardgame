@@ -1,7 +1,7 @@
 import Terrain from "../classes/Terrain"
 import { Coords } from "../settings"
 
-type TerrainTile = Coords & {
+export type TerrainTile = Coords & {
     canWalk: boolean
 }
 

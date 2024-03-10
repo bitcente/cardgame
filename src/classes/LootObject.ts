@@ -1,7 +1,7 @@
 import { modelLoader } from "../loaders/gltfLoader";
 import { castShadows } from "../scripts/castShadows";
 import { ObjectProps, ObjectType } from "../settings";
-import { Entity, EntityProps } from "./Entity";
+import { Entity, EntityProps, entitySuffix } from "./Entity";
 import * as THREE from "three"
 
 type LootObjectProps = EntityProps & {
@@ -47,6 +47,7 @@ export class LootObject extends Entity {
                     clone.scale.x = clone.scale.y = clone.scale.z = .75
                     clone.position.y = characterStats.get(type) ?? 0
                     const lootObject = new THREE.Group()
+                    lootObject.name = id + entitySuffix
                     lootObject.add(clone)
                     
                     this.mesh = lootObject

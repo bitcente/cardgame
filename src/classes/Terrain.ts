@@ -9,6 +9,7 @@ import { moveObjectTo, pathFind } from "../scripts/movement";
 import { terrainState } from "../states/terrain";
 import { modelLoader } from "../loaders/gltfLoader";
 import { global } from "../states/global";
+import attackController from "../controllers/attackController";
 
 export default class Terrain {
     _tiles
@@ -57,15 +58,14 @@ export default class Terrain {
                 this._mesh = mesh
                 
                 // Store ON_CLICK function
-                input.ON_CLICK.push(this.tileClicked.bind(this))
+                input.ON_CLICK.push({id: "terrain", function: this.tileClicked.bind(this)})
             }
         )
 
     }
 
     updateInstanceMesh() {
-        if (this._mesh && this._mesh.instanceColor)
-                this._mesh.instanceColor.needsUpdate = true;
+        if (this._mesh && this._mesh.instanceColor) this._mesh.instanceColor.needsUpdate = true;
     }
 
     update() {
@@ -79,9 +79,9 @@ export default class Terrain {
                 if (input.TILE_INTERSECTED && input.TILE_INTERSECTED.instanceId && input.TILE_INTERSECTED != intersection[ 0 ]) {
                     const tileData = map_tileset.find((tile: any) => tile.instancedIndex === input.TILE_INTERSECTED?.instanceId);   
                     if (tileData) {
-                        const canWalk = this.canPlayerWalkToTile(tileData, 'mouseleave')
+                        const canWalk = this.canPlayerWalkToTile(tileData)
                         
-                        // Paint the square blue or white on 'mouseleave'
+                        // Paint the tile blue or white on 'mouseleave'
                         terrainMesh.setColorAt( input.TILE_INTERSECTED.instanceId, color.COPY.setHex(
                             canWalk ? color.WALKABLE.getHex() : color.WHITE.getHex()
                         ) );
@@ -97,20 +97,24 @@ export default class Terrain {
                         terrainMesh.getColorAt( input.TILE_INTERSECTED.instanceId, color.COPY );
                         if ( (
                             tileData.hoverState === 'none' ||
-                            tileData.hoverState === 'walkable'
+                            tileData.hoverState === 'walkable' ||
+                            tileData.hoverState === 'unwalkable' 
                         ) && playerState.PLAYER.character.mesh) {
-                            const canWalk = this.canPlayerWalkToTile(tileData, 'hovered')
-                            // Paint currently hovered square to blue or red depending on the availability
+                            const canWalk = this.canPlayerWalkToTile(tileData)
+                            // Paint currently hovered tile to blue or red depending on the availability
                             terrainMesh.setColorAt( input.TILE_INTERSECTED.instanceId, color.COPY.setHex( 
                                 canWalk ?
                                 color.SELECT.getHex() : color.DENY.getHex()
                             ) );
                             this.updateInstanceMesh()
 
-                            if (canWalk) cursorPointer()
-                            else cursorDefault()
-
-                            terrainState.TILE_HOVERED = {x: tileData.x, z: tileData.z, canWalk }
+                            if (canWalk) {
+                                cursorPointer()
+                                tileData.hoverState = 'walkable'
+                            } else {
+                                cursorDefault()
+                                tileData.hoverState = 'unwalkable'
+                            }
                         }
                         
                     }
@@ -123,7 +127,7 @@ export default class Terrain {
                 if ( input.TILE_INTERSECTED && input.TILE_INTERSECTED.instanceId && playerState.PLAYER_CAN_MOVE) {
                     const tileData = map_tileset.find((tile: any) => tile.instancedIndex === input.TILE_INTERSECTED?.instanceId);   
                     if (tileData) {
-                        const canWalk = this.canPlayerWalkToTile(tileData, 'last')
+                        const canWalk = this.canPlayerWalkToTile(tileData)
                         terrainMesh.setColorAt( input.TILE_INTERSECTED.instanceId, color.COPY.setHex( 
                             canWalk ? 
                             color.WALKABLE.getHex() : color.WHITE.getHex()
@@ -144,15 +148,24 @@ export default class Terrain {
         if (!playerState.IS_PLAYER_SELECTED) return
         
 
+        const characterPosition = playerState.PLAYER.character.mesh.position
+        const characterMovement = playerState.PLAYER.character.movement
         for (let i = 0; i < map_tileset.length; i++) {
-            const tile = map_tileset[i];
-            const canWalk = this.canPlayerWalkToTile(tile, 'update walkable tiles')
-            
-            if (canWalk) {
-                terrainMesh.setColorAt( tile.instancedIndex, color.COPY.setHex(color.WALKABLE.getHex()) )
-                this.updateInstanceMesh()
+            if (
+                Math.abs(characterPosition.x - map_tileset[i].x) <= characterMovement &&
+                Math.abs(characterPosition.z - map_tileset[i].z) <= characterMovement
+            ) {
+                const tile = map_tileset[i];
+                const canWalk = this.canPlayerWalkToTile(tile)
+                
+                if (canWalk) {
+                    terrainMesh.setColorAt( tile.instancedIndex, color.COPY.setHex(color.WALKABLE.getHex()) )
+                    this.updateInstanceMesh()
+                }
             }
         }
+        console.log("post updateWalkableTiles");
+        
     }
 
     resetTiles() {
@@ -170,7 +183,12 @@ export default class Terrain {
     tileClicked() {
         if (input.INTERSECTED_OBJECT === this._mesh) {
             const tile = terrainState.TILE_HOVERED
-            if (tile.canWalk && playerState.PLAYER_CAN_MOVE && playerState.IS_PLAYER_SELECTED) {
+
+            if (playerState.PREPARING_TILE_ATTACK) {
+                // Click tile to attack there
+                attackController.attack({ tile })
+                
+            } else if (tile.canWalk && playerState.PLAYER_CAN_MOVE && playerState.IS_PLAYER_SELECTED) {
                 playerState.PLAYER_CAN_MOVE = false
                 playerState.IS_PLAYER_SELECTED = false
                 cursorDefault()
@@ -183,12 +201,12 @@ export default class Terrain {
         }
     }
 
-    canPlayerWalkToTile(tile: Tileset, test: string): boolean {
-        console.log(test);
-        
-        const characterPosition = playerState.PLAYER.character.mesh.position
-        const pathToTile = pathFind({x: characterPosition.x, z: characterPosition.z}, {x: tile.x, z: tile.z}, test)
-        return (pathToTile).length <= playerState.PLAYER.character.movement && pathToTile.length != 0
+    canPlayerWalkToTile(tile: Tileset): boolean {
+        if (playerState.PLAYER.character.mesh && playerState.PLAYER_CAN_MOVE) {
+            const characterPosition = playerState.PLAYER.character.mesh.position
+            const pathToTile = pathFind({x: characterPosition.x, z: characterPosition.z}, {x: tile.x, z: tile.z})
+            return (pathToTile).length <= playerState.PLAYER.character.movement && pathToTile.length != 0
+        } else return false
     }
 
 

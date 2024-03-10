@@ -269,7 +269,7 @@ export type ObjectProps = Coords & {
 
 // How tiles are positioned
 export const map_objects: ObjectProps[] = [
-    {x: 0, z: 10, type: ObjectType.Barrel},
+    {x: 1, z: 2, type: ObjectType.Barrel}, /* {x: 0, z: 10, type: ObjectType.Barrel}, */
     {x: 6, z: 14, type: ObjectType.Crate},
     {x: 6, z: 5, type: ObjectType.LootSack},
     {x: 8, z: 9, type: ObjectType.LootSack},

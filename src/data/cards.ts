@@ -1,4 +1,5 @@
 import { Card } from "../classes/CardController"
+import attackController from "../controllers/attackController"
 
 export const cards: Card[] = [
     {
@@ -8,8 +9,6 @@ export const cards: Card[] = [
         energyCost: 1,
         effect({ source }) {
             source.addMovement(2)
-            console.log(source);
-            
         },
     },
     {
@@ -18,8 +17,9 @@ export const cards: Card[] = [
         description: "You deal 1 point of damage to anything.",
         energyCost: 1,
         range: 1,
-        effect({ entityTarget }) {
-            entityTarget?.takeDamage(1)
+        canCancel: true,
+        effect({ source, entityTarget }) {
+            attackController.prepareAttackToEntity(source, 1, 1)
         },
     },
     {

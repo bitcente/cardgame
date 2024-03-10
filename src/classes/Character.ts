@@ -3,7 +3,7 @@ import { CharacterType } from "../data/characters"
 import { modelLoader } from "../loaders/gltfLoader"
 import { castShadows } from "../scripts/castShadows"
 import { CardController } from "./CardController"
-import { Entity, EntityProps } from "./Entity"
+import { Entity, EntityProps, entitySuffix } from "./Entity"
 import * as THREE from "three"
 
 export type CharacterProps = EntityProps & {
@@ -32,7 +32,7 @@ export class Character extends Entity {
             `/static/models/characters/${character}.gltf`,
             (model) => {
                 const characterGroup = new THREE.Group()
-                characterGroup.name = id
+                characterGroup.name = id + entitySuffix
                 castShadows(model.scene)
                 
                 characterGroup.add(model.scene)

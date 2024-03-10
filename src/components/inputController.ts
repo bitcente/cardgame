@@ -2,12 +2,12 @@ import * as THREE from 'three';
 import { cursorDefault, input } from '../states/input';
 import { terrainState } from '../states/terrain';
 import { global } from '../states/global';
+import { map_tileset } from '../settings';
+import { playerState } from '../states/player';
 
 // RAYCASTER
 export const pointer = new THREE.Vector2();
 const root = document.documentElement
-
-//const hoveredObjects: any[string] = [];
 
 let timer: NodeJS.Timeout
 function onPointerMove( event: PointerEvent ) {
@@ -28,39 +28,24 @@ function onPointerMove( event: PointerEvent ) {
     const intersects = input.RAYCASTER?.intersectObjects(global.scene!.children, true);
 
 	if (!intersects) return
-    // collect array of uuids of currently hovered objects
-    // hoveredObjectUuids = intersects.map(el => el.object.uuid);
-
 
 	if (intersects[0]) {
 		input.INTERSECTED_OBJECT = intersects[0].object
+
+        // Set tile of terrain hovered
+        if (terrainState.terrain && terrainState.terrain.mesh && playerState.IS_PLAYER_SELECTED) {
+            const intersection = input.RAYCASTER?.intersectObject( terrainState.terrain.mesh );
+            if (intersection && intersection.length > 0 && intersection[0].instanceId) {
+                const tileData = map_tileset.find((tile: any) => tile.instancedIndex === intersection[0].instanceId); 
+                if (tileData) {
+                    terrainState.TILE_HOVERED = {x: tileData.x, z: tileData.z, canWalk: terrainState.terrain.canPlayerWalkToTile(tileData) }
+                }
+            }
+        }
 	} else {
 		input.INTERSECTED_OBJECT = null
 		cursorDefault()
 	}
-	
-    /* for (let i = 0; i < intersects.length; i++) {
-        const hoveredObj = intersects[i].object;
-        if (hoveredObjects[hoveredObj.uuid]) {
-            continue; // this object was hovered and still hovered
-        } else {
-			// First time hovering
-			console.log(hoveredObj);
-		}
-
-        // collect hovered object
-        hoveredObjects[hoveredObj.uuid] = hoveredObj;
-		return
-    }
-
-    for (let uuid of Object.keys(hoveredObjects)) {
-        let idx = hoveredObjectUuids.indexOf(uuid);
-        if (idx === -1) {
-            // object with given uuid was unhovered
-            let unhoveredObj = hoveredObjects[uuid];
-            delete hoveredObjects[uuid];
-        }
-    } */
 }
 
 let prevX = 0
@@ -81,7 +66,7 @@ const onClickUp = (e: any) => {
         // Execute all functions stored inside ON_CLICK global array
         if (input.ON_CLICK.length) {
             for (let i = 0; i < input.ON_CLICK.length; i++) {
-                input.ON_CLICK[i]()
+                input.ON_CLICK[i].function()
             }
         }
     }

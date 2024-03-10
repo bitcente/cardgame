@@ -20,6 +20,7 @@ export type Card = {
     energyCost?: number,
     quick?: boolean,
     range?: number,
+    canCancel?: boolean,
     effect: (args: CardEffectProps) => void,
 }
 
@@ -43,6 +44,7 @@ export class CardController {
     private _maxOfCardsInHand: number = 5
     private _ownerEntity: Entity
     private _handHTML: HTMLElement | null = document.getElementById("hand")
+    private _history: Card[] = []
 
     private a = -.02
     private h = 5
@@ -98,7 +100,7 @@ export class CardController {
         })
     }
 
-    private makeDeckCardsUnique(deck: Card[]) {
+    private makeDeckCardsUnique(deck: Card[]): Card[] {
         const deckToTransform = deck
         for (let i = 0; i < deckToTransform.length; i++) {
             const newId = makeId(7)
@@ -107,7 +109,7 @@ export class CardController {
         return deckToTransform
     }
 
-    public suffle() {
+    public suffle(): void {
         this._deck.sort(() => Math.random() - 0.5);
     }
 
@@ -122,7 +124,21 @@ export class CardController {
         }
     }
 
-    public drawHand() {
+    public extractFromDiscardPile(id: string): Card | undefined {
+        if (this._discardPile.length) {
+            const cardToRecover = this._discardPile.find(card => card.generatedId == id)
+            if (cardToRecover) {
+                UIController.deckCounter = this._discardPile.length
+                // Add card to hand
+                this._hand.push(cardToRecover)
+                this.createCard(cardToRecover)
+                return cardToRecover
+            }
+        }
+        return
+    }
+
+    public drawHand(): void {
         for (let i = 0; i < this._maxOfCardsInHand; i++) {
             setTimeout(() => {
                 this.drawCard()
@@ -145,7 +161,7 @@ export class CardController {
         return drawnCard
     }
 
-    private removeCardEventListeners(htmlCard: HTMLElement) {
+    private removeCardEventListeners(htmlCard: HTMLElement): void {
         if (!htmlCard) return
         htmlCard.removeEventListener('mouseenter', this.pointerEnterCardBinded)
         htmlCard.removeEventListener('mouseleave', this.pointerLeaveCardBinded)
@@ -153,7 +169,7 @@ export class CardController {
         htmlCard.removeEventListener('mouseup', this.pointerUpCardBinded)
     }
 
-    private removeCardFromHand(id: string, htmlCard: HTMLElement, abstractCard: CardHTML) {
+    private removeCardFromHand(id: string, htmlCard: HTMLElement, abstractCard: CardHTML): void {
         htmlCard.remove()
         this.alignCards()
         this._hand.splice(this._hand.findIndex((card) => card.generatedId === id), 1)
@@ -161,7 +177,7 @@ export class CardController {
         UIController.discardPileCounter = this._discardPile.length
     }
 
-    public discardHand(callBack?: () => void) {
+    public discardHand(callBack?: () => void): void {
         let cards = document.getElementsByClassName("card") as HTMLCollectionOf<HTMLElement>
         if (cards.length) {
             Array.from(cards).forEach((card, i) => {
@@ -178,7 +194,7 @@ export class CardController {
         }
     }
 
-    public discardCard(id: string) {
+    public discardCard(id: string): void {
         const cardToUse = this._hand.filter(card => {
             return card.generatedId === id
         })[0]
@@ -193,13 +209,15 @@ export class CardController {
         }
     }
 
-    useCard(id: string, entityTarget?: Entity) {
+    useCard(id: string, entityTarget?: Entity): void {
         const cardToUse = this._hand.filter(card => {
             return card.generatedId === id
         })[0]
         
         if (!cardToUse) return
         cardToUse.effect({source: this._ownerEntity, entityTarget: entityTarget || null})
+        this._history.push(cardToUse)
+        console.log(this._history);
         const htmlCard = this._handHTML?.querySelector('#'+id) as HTMLElement
         if (htmlCard) {
             this.removeCardEventListeners(htmlCard)
@@ -214,14 +232,14 @@ export class CardController {
 
 
     // HTML
-    canUseCard(cardHTML: HTMLElement) {
+    canUseCard(cardHTML: HTMLElement): boolean {
         const abstractCard = this._hand.filter(aCard => {
             return aCard.generatedId === cardHTML.id
         })[0]
         return !abstractCard.energyCost || this._ownerEntity.energy >= abstractCard.energyCost
     }
 
-    pointerEnterCard(e: MouseEvent) {
+    pointerEnterCard(e: MouseEvent): void {
         input.HOVER_HAND = true
         const card = e.target as HTMLElement
         if (!card.classList.contains('cant-play')) {
@@ -230,20 +248,20 @@ export class CardController {
             this.alignCards()
         }
     }
-    pointerLeaveCard(e: MouseEvent) {
+    pointerLeaveCard(e: MouseEvent): void {
         input.HOVER_HAND = false
         const card = e.target as HTMLElement
         card.classList.remove('is-hovered')
         this.cardHovered = false
         this.alignCards()
     }
-    pointerDownCard(e: MouseEvent) {
+    pointerDownCard(e: MouseEvent): void {
         const card = e.target as HTMLElement
         if (!card.classList.contains('cant-play')) {
             card.classList.add('dragging')
         }
     }
-    pointerUpCard(e: MouseEvent) {
+    pointerUpCard(e: MouseEvent): void {
         const card = e.target as HTMLElement
         card.classList.remove('dragging')
 
@@ -256,7 +274,7 @@ export class CardController {
     }
     
 
-    createCard(card: Card) {
+    createCard(card: Card): void {
         if (!card) return
         
         const divCard = document.createElement("DIV")
@@ -278,7 +296,7 @@ export class CardController {
         this.alignCards()
     }
 
-    alignCards() {
+    alignCards(): void {
         let cards = document.getElementsByClassName("card") as HTMLCollectionOf<HTMLElement>
         
         let count = cards.length
@@ -324,7 +342,7 @@ export class CardController {
         })
     }
 
-    getrotation(xpos: number){
+    getrotation(xpos: number): number {
         let ypos = this.getypos(xpos);
         if(xpos < this.h){
             //left of the vertex
@@ -358,7 +376,7 @@ export class CardController {
         }
     }
 
-    getypos(xpos: number) {
+    getypos(xpos: number): number {
         let ypos = this.a * Math.pow((xpos - this.h), 2) + this.k;
         return ypos;
     }
@@ -383,5 +401,8 @@ export class CardController {
     }
     get ownerEntity() {
         return this._ownerEntity
+    }
+    get history() {
+        return this._history
     }
 }

@@ -15,12 +15,11 @@ function containsObject(obj: Coords, list: any) {
   return false;
 }
 
-export function pathFind(origin: Coords, target: Coords, test?: string): Coords[] {
+export function pathFind(origin: Coords, target: Coords, t?: boolean): Coords[] {
   if (origin.x == null || origin.z == null || target.x == null || target.z == null) return []
   
   const xDiff = Math.abs(origin.x - target.x)
   const zDiff = Math.abs(origin.z - target.z)
-
 
   for (let i = 0; i < map_objects.length; i++) {
     if (map_objects[i].x === target.x && map_objects[i].z === target.z) {
@@ -83,8 +82,6 @@ export function pathFind(origin: Coords, target: Coords, test?: string): Coords[
                   last: current
                 }
                 open.push(adjacentObject)
-                console.log(test);
-                
               }
             }
           }
@@ -119,7 +116,7 @@ export function moveObjectTo(targetObject: any, x: number, z: number, endCallbac
     movementTimeline.kill()
   })
 
-  let path: Coords[] = pathFind({ x: objectX, z: objectZ }, { x, z })
+  let path: Coords[] = pathFind({ x: objectX, z: objectZ }, { x, z }, true)
   
   let lastAxises = {x: objectX, z: objectZ}
   let lastRotY = object.rotation.y
