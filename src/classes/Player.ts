@@ -1,10 +1,12 @@
 import UIController from "../controllers/UIController"
+import { cards } from "../data/cards"
 import { CharacterType, characterStats, dummyCharacterStats } from "../data/characters"
 import { Coords } from "../settings"
 import { cursorDefault, input } from "../states/input"
 import { playerState } from "../states/player"
 import { terrainState } from "../states/terrain"
 import { findParentOfMeshByName } from "../utils/utils"
+import { CardController } from "./CardController"
 import { Character } from "./Character"
 
 export interface PlayerProps {
@@ -17,6 +19,7 @@ export class Player {
     private _name: string
     private _character: Character
     private _mine: boolean
+    private _cardController: CardController
 
     constructor({ name = 'No Name', character, mine = false }: PlayerProps) {
         this._name = name
@@ -29,6 +32,25 @@ export class Player {
         })
 
         input.ON_CLICK.push({ id: "character", function: this.selectCharacter.bind(this) })
+
+        this._cardController = new CardController({ deck: [
+            Object.assign({}, cards[0]),
+            Object.assign({}, cards[0]),
+            Object.assign({}, cards[0]),
+            Object.assign({}, cards[0]),
+            Object.assign({}, cards[0]),
+            Object.assign({}, cards[0]),
+            Object.assign({}, cards[0]),
+            Object.assign({}, cards[1]),
+            Object.assign({}, cards[1]),
+            Object.assign({}, cards[4]),
+            Object.assign({}, cards[4]),
+            Object.assign({}, cards[4]),
+            Object.assign({}, cards[4]),
+            Object.assign({}, cards[4]),
+            Object.assign({}, cards[4]),
+        ], ownerEntity: this._character })
+
         this.init()
     }
 
@@ -51,7 +73,6 @@ export class Player {
         if (characterGroupMesh) {
             playerState.IS_PLAYER_SELECTED = !playerState.IS_PLAYER_SELECTED
             if (playerState.IS_PLAYER_SELECTED) {
-                console.log("prev updateWalkableTiles");
                 terrainState.terrain?.updateWalkableTiles()
             } else {
                 terrainState.terrain?.resetTiles()
@@ -70,8 +91,10 @@ export class Player {
     get character() {
         return this._character
     }
-
     get rotation() {
         return this._character.rotation
+    }
+    get cardController() {
+        return this._cardController
     }
 }

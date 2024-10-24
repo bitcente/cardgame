@@ -127,11 +127,17 @@ export class CardController {
     public extractFromDiscardPile(id: string): Card | undefined {
         if (this._discardPile.length) {
             const cardToRecover = this._discardPile.find(card => card.generatedId == id)
+            const cardToRecoverIndex = this._discardPile.findIndex(card => card.generatedId == id)
+            
             if (cardToRecover) {
-                UIController.deckCounter = this._discardPile.length
+                this._discardPile.splice(cardToRecoverIndex, 1)
+                UIController.discardPileCounter = this._discardPile.length
                 // Add card to hand
                 this._hand.push(cardToRecover)
-                this.createCard(cardToRecover)
+                this.createCard(cardToRecover, true)
+                this._ownerEntity.addEnergy(cardToRecover.energyCost ?? 0)
+                UIController.energy = this._ownerEntity.energy
+                this.alignCards()
                 return cardToRecover
             }
         }
@@ -217,7 +223,6 @@ export class CardController {
         if (!cardToUse) return
         cardToUse.effect({source: this._ownerEntity, entityTarget: entityTarget || null})
         this._history.push(cardToUse)
-        console.log(this._history);
         const htmlCard = this._handHTML?.querySelector('#'+id) as HTMLElement
         if (htmlCard) {
             this.removeCardEventListeners(htmlCard)
@@ -274,12 +279,13 @@ export class CardController {
     }
     
 
-    createCard(card: Card): void {
+    createCard(card: Card, fromDiscardPile?: boolean): void {
         if (!card) return
         
         const divCard = document.createElement("DIV")
         divCard.id = card.generatedId || card.id
         divCard.classList.add('card')
+        if (fromDiscardPile) divCard.classList.add('from-discard-pile')
         divCard.innerHTML = `
             <span class="value">${card.title}</span> 
             <span class="cost">${card.energyCost}</span>
@@ -291,6 +297,7 @@ export class CardController {
         divCard.addEventListener('mouseup', this.pointerUpCardBinded)
         setTimeout(() => {
             divCard.classList.add('created')
+            if (fromDiscardPile) divCard.classList.remove('from-discard-pile')
         }, 0);
         this._handHTML?.appendChild(divCard)
         this.alignCards()

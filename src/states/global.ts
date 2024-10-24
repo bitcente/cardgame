@@ -7,11 +7,15 @@ export const global: {
     cameraCards: any
 
     UPDATE: { (): void } [],
+
+    turn: number
 } = {
     scene: undefined,
     sceneCards: undefined,
     camera: undefined,
     cameraCards: undefined,
     
-    UPDATE: []
+    UPDATE: [],
+
+    turn: 0,
 }

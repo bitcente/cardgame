@@ -19,7 +19,7 @@ export const cards: Card[] = [
         range: 1,
         canCancel: true,
         effect({ source, entityTarget }) {
-            attackController.prepareAttackToEntity(source, 1, 1)
+            attackController.prepareAttackToEntity(source, 1, this.range ?? 0)
         },
     },
     {
@@ -43,12 +43,12 @@ export const cards: Card[] = [
     {
         id: "basic_throw_knife",
         title: "Throw knife",
-        description: "You throw a knife at something that is 3 squares away or less.",
+        description: "You throw a knife at something that is 3 squares away or less dealing 1 point of damage.",
         energyCost: 2,
         range: 3,
-        effect({ entityTarget }) {
+        effect({ source }) {
             // deal dmg if range enough
-            entityTarget?.takeDamage(1)
+            attackController.prepareAttackToEntity(source, 1, this.range ?? 0)
         },
     },
 ]

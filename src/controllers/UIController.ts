@@ -13,10 +13,12 @@ class UIController {
 
     private _UICancelAttackAction: HTMLElement | null = document.getElementById("cancel-attack-action")
 
+    private _UIChat: HTMLElement | null = document.getElementById("chat")
+
     constructor() {
         this._UICancelAttackAction?.addEventListener('click', () => {
-            const lastCancellableCardUsed = playerState.PLAYER.character.cardController.history.find((card: Card) => card.canCancel == true)
-            playerState.PLAYER.character.cardController.extractFromDiscardPile(lastCancellableCardUsed.generatedId)
+            const lastCancellableCardUsed = playerState.PLAYER.cardController.history.reverse().find((card: Card) => card.canCancel == true)
+            playerState.PLAYER.cardController.extractFromDiscardPile(lastCancellableCardUsed.generatedId)
             attackController.cancelAttackEntity()
         })
     }
@@ -56,6 +58,18 @@ class UIController {
     }
     set discardPileCounter(discardPileCounter: number) {
         if (this._UIDiscardPileCounter) this._UIDiscardPileCounter.innerText = String(discardPileCounter)
+    }
+
+
+    sendMessage(message: string) {
+        if (!this._UIChat) return
+
+        const text = document.createElement('P')
+        text.innerText = message
+        this._UIChat.appendChild(text)
+        if (this._UIChat.childElementCount > 12) {
+            this._UIChat.removeChild(this._UIChat.children[0])
+        }
     }
 }
 

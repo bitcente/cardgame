@@ -1,5 +1,5 @@
 import { cards } from "../data/cards"
-import { CharacterType } from "../data/characters"
+import { CharacterType, characterStats, dummyCharacterStats } from "../data/characters"
 import { modelLoader } from "../loaders/gltfLoader"
 import { castShadows } from "../scripts/castShadows"
 import { CardController } from "./CardController"
@@ -12,19 +12,17 @@ export type CharacterProps = EntityProps & {
 
 export class Character extends Entity {
     private _character: CharacterType
-    private _cardController: CardController
-
+    
     public constructor({
         id,
         nameTag,
-        baseStats,
         position,
         character
     }: CharacterProps) {
         super({
             id,
             nameTag,
-            baseStats,
+            baseStats: characterStats.get(character) ?? dummyCharacterStats,
             position,
         })
 
@@ -41,22 +39,6 @@ export class Character extends Entity {
             }
         )
         
-        this._cardController = new CardController({ deck: [
-            Object.assign({}, cards[0]),
-            Object.assign({}, cards[0]),
-            Object.assign({}, cards[0]),
-            Object.assign({}, cards[0]),
-            Object.assign({}, cards[0]),
-            Object.assign({}, cards[0]),
-            Object.assign({}, cards[0]),
-            Object.assign({}, cards[1]),
-            Object.assign({}, cards[1]),
-            Object.assign({}, cards[1]),
-            Object.assign({}, cards[1]),
-            Object.assign({}, cards[1]),
-            Object.assign({}, cards[1]),
-            Object.assign({}, cards[1]),
-        ], ownerEntity: this })
         this._character = character
 
         //this.cardController.drawHand()
@@ -67,7 +49,5 @@ export class Character extends Entity {
     get character() {
         return this._character
     }
-    get cardController() {
-        return this._cardController
-    }
+    
 }

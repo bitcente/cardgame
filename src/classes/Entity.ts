@@ -4,6 +4,8 @@ import { global } from "../states/global"
 import * as THREE from "three";
 import { terrainState } from "../states/terrain";
 import { playerState } from "../states/player";
+import { dummyCharacterStats } from "../data/characters";
+import attackController from "../controllers/attackController";
 
 export type StatPoints = {
     HEALTH: number,
@@ -22,7 +24,7 @@ export const defaultLootableObjectStats: StatPoints = {
 export type EntityProps = {
     id: string,
     nameTag: string,
-    baseStats: StatPoints,
+    baseStats?: StatPoints,
     position?: Coords
     rotation?: Rotation
 }
@@ -42,7 +44,7 @@ export class Entity {
     public constructor({
         id,
         nameTag,
-        baseStats,
+        baseStats = dummyCharacterStats,
         position = {x: 0, z: 0},
         rotation = {y: 0},
     }: EntityProps) {
@@ -75,6 +77,14 @@ export class Entity {
         UIController.energy = this._modifiedStats.ENERGY ?? 0
         UIController.protection = this._modifiedStats.PROTECTION ?? 0
         UIController.movement = this._modifiedStats.MOVEMENT ?? 0
+        
+        // Cancel attacks
+        attackController.cancelAttackEntity()
+
+        // REMOVE FROM HERE
+        global.turn ++
+        UIController.sendMessage('TURNO '+global.turn)
+        
     }
 
     // STATS ADDITIONS
@@ -92,7 +102,7 @@ export class Entity {
     public addEnergy(energyPoints: number): void {
         if (
             energyPoints > 0 && 
-            this._modifiedStats.ENERGY && this._baseStats.MAX_ENERGY &&
+            this._modifiedStats.ENERGY != null && this._baseStats.MAX_ENERGY != null &&
             this._modifiedStats.ENERGY < this._baseStats.MAX_ENERGY // If energy is not full
         ) {
             // Prevent entity from having more energy than its max capacity
@@ -188,6 +198,8 @@ export class Entity {
         if (this._mesh) {
             this._mesh.visible = false
             if (this._modifiedStats.HEALTH !== 0) this._modifiedStats.HEALTH = 0
+            const entityIndex = entityList.findIndex(obj => obj.id === this.id)
+            entityList.splice(entityIndex, 1)
         }
     }
 

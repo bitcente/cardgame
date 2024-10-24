@@ -2,6 +2,8 @@ import gsap from "gsap";
 import { Coords, map_objects } from "../settings";
 import { adjacentAvailableCoords, adjacentCoords } from "../scripts/adjacentCoords";
 import { isObstacleInCoord } from "../scripts/isObstacleInCoord";
+import { entityList } from "../classes/Entity";
+import { playerState } from "../states/player";
 
 
 function containsObject(obj: Coords, list: any) {
@@ -21,11 +23,25 @@ export function pathFind(origin: Coords, target: Coords, t?: boolean): Coords[] 
   const xDiff = Math.abs(origin.x - target.x)
   const zDiff = Math.abs(origin.z - target.z)
 
+  /* // Check if target is object
   for (let i = 0; i < map_objects.length; i++) {
     if (map_objects[i].x === target.x && map_objects[i].z === target.z && map_objects[i].destroyed !== true) {
       return [];
     }
+  } */
+  // Check if target is entity 
+  const playerPos = playerState.PLAYER.character.position
+  
+  for (let i = 0; i < entityList.length; i++) {
+    const posX = entityList[i].position?.x ?? 0
+    const posZ = entityList[i].position?.z ?? 0
+    console.log(entityList[i].nameTag, entityList[i].position !== playerPos);
+    
+    if (posX === target.x && posZ === target.z && (entityList[i].position !== playerPos)) {
+      return [];
+    }
   }
+  
 
   let path: Coords[] = []
 
@@ -68,7 +84,9 @@ export function pathFind(origin: Coords, target: Coords, t?: boolean): Coords[] 
       const adjacentTiles = adjacentAvailableCoords({x: current.x, z: current.z})
       if (adjacentTiles) {
         adjacentTiles.forEach((adjacentTile) => {
-          if (!containsObject(adjacentTile, closed)) {
+          if (adjacentTile.x > 15 || adjacentTile.z > 15 || adjacentTile.x < 0 || adjacentTile.z < 0) {
+            // Nothing to do here
+          } else if (!containsObject(adjacentTile, closed)) {
             const newCost = current.gCost + 1
             const hCost = Math.abs(adjacentTile.x - target.x!) + Math.abs(adjacentTile.z - target.z!)
             if (!containsObject(adjacentTile, open) ) {

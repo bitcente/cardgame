@@ -107,6 +107,10 @@ table {
 	cursor: pointer;
 	padding: 10px;
 }
+.card.from-discard-pile {
+	bottom: 0px;
+	left: calc(100% - 100px) !important;
+}
 
 .card:not(.created) {
 	scale: .3 !important;
@@ -233,4 +237,17 @@ table {
 	padding: 10px 20px;
 	transform: translateY(-50%);
 	cursor: pointer;
+}
+
+#chat {
+	width: 300px;
+	background-color: rgb(0, 0, 0, .3);
+	color: white;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding: 20px;
+	position: absolute;
+	bottom: 100px;
+	left: 30px;
 }

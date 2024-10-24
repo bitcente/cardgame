@@ -29,18 +29,31 @@ class AttackController {
             const path = pathFind({ x: entity.position.x, z: entity.position.z }, { x: characterPosition.x, z: characterPosition.z })
             
             if (path.length - 1 <= playerState.PLAYER.character.movement + this.range && path.length > 0) {
-
-                terrainState.terrain?.resetTiles()
                 
-                moveObjectTo(playerState.PLAYER.character.mesh, path[0].x || 0, path[0].z || 0, () => {
-                    playerState.PLAYER_CAN_MOVE = true
+                terrainState.terrain?.resetTiles()
+                this.cancelAttackEntity()
+
+                if (path.length - (this.range || 0) > playerState.PLAYER.character.movement) {
+                    playerState.PLAYER_CAN_MOVE = false
+                    moveObjectTo(playerState.PLAYER.character.mesh, path[0].x || 0, path[0].z || 0, () => {
+                        playerState.PLAYER_CAN_MOVE = true
+                        const entityToAttack = entityList.find(ent => ent.mesh?.name === entity.name)
+                        if (entityToAttack) {
+                            const damage = this.damage || 0
+                            UIController.sendMessage(`${playerState.PLAYER.name} ha infligido ${damage} punto${damage > 1 || damage == 0 ? 's' : '' } de daño a ${entityToAttack.nameTag}`)
+                            entityToAttack.takeDamage(damage)
+                        }
+                    })
+                } else {
                     const entityToAttack = entityList.find(ent => ent.mesh?.name === entity.name)
                     if (entityToAttack) {
-                        entityToAttack.takeDamage(this.damage || 1)
+                        const damage = this.damage || 0
+                        UIController.sendMessage(`${playerState.PLAYER.name} ha infligido ${damage} punto${damage > 1 || damage == 0 ? 's' : '' } de daño a ${entityToAttack.nameTag}`)
+                        entityToAttack.takeDamage(damage)
                     }
-    
-                    this.cancelAttackEntity()
-                })
+                }
+
+                
             } else {
 
                 alert("You need more movement points to reach the objective.")

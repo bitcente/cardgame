@@ -1,9 +1,12 @@
 import * as THREE from 'three';
-import { cursorDefault, input } from '../states/input';
+import { cursorDefault, cursorPointer, input } from '../states/input';
 import { terrainState } from '../states/terrain';
 import { global } from '../states/global';
 import { map_tileset } from '../settings';
 import { playerState } from '../states/player';
+import { outlinePassEnemy, outlinePassSelf } from './postprocessing';
+import { findParentOfMeshByName } from '../utils/utils';
+import { entitySuffix } from '../classes/Entity';
 
 // RAYCASTER
 export const pointer = new THREE.Vector2();
@@ -32,6 +35,34 @@ function onPointerMove( event: PointerEvent ) {
 	if (intersects[0]) {
 		input.INTERSECTED_OBJECT = intersects[0].object
 
+        const parentEntity = findParentOfMeshByName(input.INTERSECTED_OBJECT, entitySuffix, true)
+        const playerMesh = playerState.PLAYER.character.mesh
+
+        // PLAYER OUTLINE HOVER
+        if (parentEntity && outlinePassSelf) {
+            if (parentEntity.name === playerMesh.name) {
+                outlinePassSelf.selectedObjects = [ parentEntity ]
+            }
+            cursorPointer()
+        } else {
+            if (playerState.IS_PLAYER_SELECTED) {
+                outlinePassSelf.selectedObjects = [ playerMesh ]
+            } else {
+                outlinePassSelf.selectedObjects = []
+                cursorDefault()
+            }
+        }
+
+        // ENEMY OUTLINE HOVER
+        if (parentEntity && outlinePassEnemy) {
+            if (parentEntity.name !== playerMesh.name) {
+                outlinePassEnemy.selectedObjects = [ parentEntity ]
+            }
+            cursorPointer()
+        } else {
+            outlinePassEnemy.selectedObjects = []
+        }
+
         // Set tile of terrain hovered
         if (terrainState.terrain && terrainState.terrain.mesh && playerState.IS_PLAYER_SELECTED) {
             const intersection = input.RAYCASTER?.intersectObject( terrainState.terrain.mesh );
@@ -45,6 +76,12 @@ function onPointerMove( event: PointerEvent ) {
 	} else {
 		input.INTERSECTED_OBJECT = null
 		cursorDefault()
+        if (playerState.IS_PLAYER_SELECTED) {
+            outlinePassSelf.selectedObjects = [playerState.PLAYER.character.mesh]
+        } else {
+            outlinePassSelf.selectedObjects = []
+        }
+        outlinePassEnemy.selectedObjects = []
 	}
 }
 

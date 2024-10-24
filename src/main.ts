@@ -17,6 +17,7 @@ import { map_objects } from './settings';
 import * as Stats from 'stats.js';
 import Camera from './components/camera';
 import { terrainState } from './states/terrain';
+import { Character } from './classes/Character';
 
 // GUI CONTROLLER
 //const gui = new dat.GUI()
@@ -49,7 +50,7 @@ global.cameraCards = cameraCards */
 const renderer = new Renderer({sizes: sizes, enableShadowMap: true, toneMapping: THREE.ReinhardToneMapping, shadowMapType: THREE.PCFSoftShadowMap, antialias: true})
 
 // EFFECT COMPOSER - POSTPROCESSING
-const postprocessing = new Postprocessing(renderer.getRenderer(), sizes, [Passes.GammaCorrection, Passes.SMAAPass])
+const postprocessing = new Postprocessing(renderer.getRenderer(), sizes, [Passes.GammaCorrection, Passes.SMAAPass, Passes.OutlinePass])
 
 // LIGHTS
 const lights = new Lights()
@@ -58,11 +59,13 @@ const lights = new Lights()
 const controls = new MapControls(camera, renderer.getDomElement())
 
 // PLAYER
-const player = new Player({ name: 'Bitcente', character: CharacterType.Barbarian, mine: true })
+const player = new Player({ name: 'Player1', character: CharacterType.Rogue, mine: true })
 /* const player2 = new Player({ name: 'Bitcente', character: CharacterType.Mage, position: {x: 1, z: 0} })
 const player3 = new Player({ name: 'Bitcente', character: CharacterType.Knight, position: {x: 2, z: 0} })
 const player4 = new Player({ name: 'Bitcente', character: CharacterType.Barbarian, position: {x: 3, z: 0} }) */
 playerState.PLAYER = player
+
+const character1 = new Character({ id: 'Player2', nameTag: 'Player2', character: CharacterType.Knight, position: {x: 2, z: 0} })
 
 // TERRAIN
 const terrain = new Terrain()

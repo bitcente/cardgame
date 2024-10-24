@@ -162,8 +162,6 @@ export default class Terrain {
                 }
             }
         }
-        console.log("post updateWalkableTiles");
-        
     }
 
     resetTiles() {

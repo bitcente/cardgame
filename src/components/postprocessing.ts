@@ -4,6 +4,7 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js';
 import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader.js';
+import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass.js';
 import { Sizes } from "../scripts/types";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
 import { global } from "../states/global";
@@ -11,8 +12,12 @@ import { global } from "../states/global";
 export enum Passes {
     UnrealBloomPass,
     GammaCorrection,
-    SMAAPass
+    SMAAPass,
+    OutlinePass
 }
+
+export let outlinePassSelf: OutlinePass
+export let outlinePassEnemy: OutlinePass
 
 export class Postprocessing {
     _composer: EffectComposer
@@ -40,6 +45,27 @@ export class Postprocessing {
         if (passes.includes(Passes.UnrealBloomPass)) {
             const unrealBloomPass = new UnrealBloomPass(new THREE.Vector2(sizes.width, sizes.height), .2, 1.4, .4)
             this._composer.addPass(unrealBloomPass)
+        }
+        // outlines
+        if (passes.includes(Passes.OutlinePass)) {
+            outlinePassSelf = new OutlinePass( new THREE.Vector2( window.innerWidth, window.innerHeight ), global.scene!, global.camera! );
+            outlinePassSelf.edgeStrength = 6;
+            outlinePassSelf.edgeGlow = 0;
+            outlinePassSelf.edgeThickness = 1;
+            outlinePassSelf.pulsePeriod = 0;
+            outlinePassSelf.visibleEdgeColor.set( 'white' );
+            outlinePassSelf.hiddenEdgeColor .set( 'white' );
+            this._composer.addPass(outlinePassSelf);
+        }
+        if (passes.includes(Passes.OutlinePass)) {
+            outlinePassEnemy = new OutlinePass( new THREE.Vector2( window.innerWidth, window.innerHeight ), global.scene!, global.camera! );
+            outlinePassEnemy.edgeStrength = 6;
+            outlinePassEnemy.edgeGlow = 0;
+            outlinePassEnemy.edgeThickness = 1;
+            outlinePassEnemy.pulsePeriod = 0;
+            outlinePassEnemy.visibleEdgeColor.set( 'red' );
+            outlinePassEnemy.hiddenEdgeColor .set( 'red' );
+            this._composer.addPass(outlinePassEnemy);
         }
         // color adjustment
         if (passes.includes(Passes.GammaCorrection)) {

@@ -8,7 +8,7 @@ export const color: {
 
     COPY: THREE.Color,
 } = {
-    WHITE: new THREE.Color(0xffffff),
+    WHITE: new THREE.Color(0xc9c9c9),
     SELECT: new THREE.Color(0x41FF53),
     WALKABLE: new THREE.Color(0x41D7F9),
     DENY: new THREE.Color(0xFF3030),
